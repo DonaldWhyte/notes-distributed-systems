@@ -1,0 +1,118 @@
+%
+% Name: Module Book Template
+% Author: Donald Whyte (sc10dw@leeds.ac.uk)
+%
+% Template document for revision module books.
+%
+
+%
+% Use the standard article template.
+%
+\documentclass{article}
+
+\usepackage[margin=2cm]{geometry} % easy page formatting
+	\geometry{letterpaper}
+\usepackage{doc} %special logo commands
+\usepackage{url} % formatting URLs
+\usepackage{datetime} % up-to-date, automatically generated times
+% For graphic files
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+% Set the Phytitle, author, and date.
+\title{Distributed Systems \\ COMP3900 -- CR31}
+\author{Donald Whyte}
+\date{\today}
+
+% The document proper.
+\begin{document}
+
+% Add the title section.
+\maketitle
+
+% Add an abstract.
+\abstract{
+	DESCRIPTION OF MODULE
+}
+
+% Add various lists on new pages.
+\pagebreak
+\tableofcontents
+
+\pagebreak
+\listoffigures
+
+\pagebreak
+\listoftables
+
+% Start the paper on a new page.
+\pagebreak
+
+\section{What is a Distributed System?}
+
+TODO
+
+\section{Message Orientated Communication}
+
+TODO
+
+\section{Remote Method Invocation}
+
+TODO
+
+\section{Service Orientated Architectures}
+
+TODO
+
+\subsection{SOAP}
+
+TODO
+
+\subsection{REST}
+
+TODO
+
+\section{Distributed Naming}
+
+TODO
+
+\section{Directory and Discovery Services}
+
+TODO
+
+\section{Timing and Synchronisation}
+
+TODO
+
+\section{Security in Distributed Systems}
+
+TODO
+
+\section{General Concepts}
+
+\subsection{Grid Computing}
+
+TODO
+
+\subsection{Cloud Computing}
+
+TODO
+
+\subsection{Virtualisation}
+
+TODO
+
+\subsection{Big Data}
+
+TODO
+
+\section{Building Distributed Systems in Java}
+
+TODO
+
+% Generate the bibliography.
+\bibliography{latex-sample}
+\bibliographystyle{unsrt}
+
+\end{document}
