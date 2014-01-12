@@ -1,0 +1,719 @@
+\documentclass{article}
+
+\usepackage[margin=2cm]{geometry} % easy page formatting
+	\geometry{letterpaper}
+
+\begin{document}
+\setcounter{tocdepth}{4}
+\title{Distributed Systems}
+\date{Third Year}
+\author{Ashley Ingram}
+\maketitle
+\tableofcontents
+\pagebreak
+
+\section{Introduction}
+A distributed system is a collection of independent computers that appears to its users as a single coherent system. 
+
+It may be alternately defined as a system in which components located at networked computers communicate and coordinate their actions only by passing messages. 
+
+A simpler way of defining a distributed system would be one that has no central point of failure - if one machine stops working, a distributed system will not be affected.
+
+A distributed system aims to be Scalable and Transparent, Open/Operable (the ability for multiple devices and services to work together to complete a common task), and Secure. A distributed system must be able to recover from independent failures in hardware, and deal with the inherent complexity that concurrency adds, whilst not having a global clock to provide a reference point for time.
+
+\subsection{The PAD Model}
+\begin{itemize}
+    \item \textbf{Presentation Tier}
+    The presentation tier contains everything required to interface with the user of the system.
+    \item \textbf{Application Layer}
+    The application layer is the business logic layer of the application, where the core functionality the system provides is performed.
+    \item \textbf{Data Layer}
+    The data layer commits data from the application layer to a persistent storage medium. 
+\end{itemize}
+
+\subsubsection{Web Search Engine Example}
+\begin{itemize}
+    \item The \textbf{Presentation Tier} of a search engine would be the web page that the user communicates with (for example, the search page at google.com)
+    \item The \textbf{Application Tier} of a search engine would generate a query based on the users input which it would submit to the data tier. It would then take the response from the data tier, rank the results and provide them in HTML format ready to be consumed by the Presentation Tier.
+    \item The \textbf{Data Tier} would be the database that stores web pages. It would be provided with a query from the Application Tier, and return a list of Web Page Titles with associated metadata (link, short description, etc).
+\end{itemize}
+
+\subsubsection{PAD and the Client Server Model}
+The layers of the PAD model can be applied to the Client-Server model in several ways. All of the layers must be present either on the client or the server, but how the split works depends on the application. For example, a search engine is a typical example of where the Application and Data tiers are both provided by the server, where the Presentation Tier/User Interface is on the client machine. 
+
+At one extreme, the Presentation Tier may be rendered on both the Client and the Server machine (for example, when using remote desktop/VNC) with everything else being present on the server. This has the advantage of having a very lightweight client.
+
+The other extreme is where a Client application has the Presentation Tier and Application Tier, and a local Database/Data Tier. This local database is sent to a Server database for backup, or for consolidation of information from multiple clients. 
+
+Probably the most common architecture is to have the Presentation Tier and part of the Application tier on the client, and the other half of the Application Tier and the Data Tier on the server. Examples of this would be Web Services (for example, the Data and Application logic is partly performed by the Twitter API, but a mobile application client will also have application and presentation logic) and modern web applications (a Javascript web stack).
+
+\subsection{Scalability}
+One of the key considerations for a Distributed System is how scalable it is. A Distributed System must scale 
+\begin{itemize}
+    \item \textbf{In Size}
+    A distributed system can be considered to be scalable in size if it remains effective after a significant increase in users or resources. The Internet is an example of a system which scales exceptionally well in size. Organizing information in a hierarchical way improves size-based scalability (accessing it becomes $O(log(N))$ rather than $O(N)$). An example of a system which stores information in a hierarchical way is DNS. 
+
+    By contrast, single points of failure are become key problems when aiming for size-based scalability. A single server for all users, a single data repository (such as having one phone book for everyone), or having to have all information available for an algorithm (a centralized algorithm, rather than one which can perform on a subset of currently available data) will all cause scalability issues.
+    \item \textbf{Geographically}
+    The challenge with geographically distributing a service is how to ensure that it remains synchronized, and managing the communication between different parts of the service. Geographically distributing 2 servers will make it much more expensive for them to communicate. This increase in network latency will also have to be taken into account for certain types of operation; for example, synchronizing data - the original data might be out of date by the time it reaches another server. This is most obvious when synchronizing clocks where the data basically out of date instantly. 
+
+    Geographic issues may stem from legal or political restrictions applied in different locations.
+
+    Geographically distributed services also introduce reliability issues.
+    \item \textbf{Administratively}
+    There can be several administrative challenges as a system becomes bigger. It may have to be run in different administrative domains with conflicting policies (such as how many resources can be used, how the system is managed, and how it is secured). 
+\end{itemize}
+
+Various strategies exist for making a system be (or appear) more scalable. For example, work could be carried out on the Client side rather than the server, which reduces (or delays) the communications overhead making the system appear more responsive. Alternatively work could be completed on the Client and Server in parallel - as the user only sees the Client, they assume it is doing work (and don't have the visible wait whilst the server does something and the client is non-responsive).
+
+Information can be organized in a hierarchical way rather than in a linear fashion in order to decrease lookup time (for example, in DNS).
+
+Replication can be used so that there is not one canonical place to look up information. This increases availability (because if the server storing that piece of data goes down, the data is still available in a replicated fashion) and allows for load balancing (and for clients picking the optimal server for them). A local replication (cache) can prevent the overhead of network communication completely, hiding latency issues from the client. However, replication causes a serious consistency problem, as all of the replica sets must be updated when the master is updated (if complete consistency is required).
+
+\subsection{Transparency}
+A Distributed System should aim to be Transparent. A transparent system is visible to a user (or developer) as a single platform, rather than several discrete services which are working together. This increases the ease at which an application can be used (or developed against). There are various forms of transparency in a distributed system.
+\begin{itemize}
+    \item \textbf{Access} - The method in which a resource is accessed, and whether or not there's any differences in data representation in that resource should be hidden from the user.
+    \item \textbf{Location} - The user should not need to know where the resource is located (either geographically, or in terms of servers, etc)
+    \item \textbf{Migration} - An extension to Location, the user should not know if a resource has been moved elsewhere
+    \item \textbf{Relocation} - It should not only be possible to migrate a resource, but migrate it whilst it's in use
+    \item \textbf{Replication} - A resource should be able to be replicated across a network, without a client necessarily knowing they're accessing a replica
+    \item \textbf{Concurrency} - A resource can be used by several clients in parallel, without any individual client knowing about any other
+    \item \textbf{Failure} - The failure and recovery of a resource should not be visible to the client (good failover)
+    \item \textbf{Persistence} - The persistence mechanism (memory, disk, etc) should not be visible to the user
+\end{itemize}
+
+Many of the principles of Transparency serve as abstractions around the distributed system, so that an individual client does not need to worry about the physical implications of tasks they're completing - they can offload them to the server and only worry about the logical requirements (for example, asking the Twitter service for a tweet, rather than worrying about the individual row in a storage system like a database, that is kept in a specific server in a specific data-center in a specific geographic location). This abstraction layer also hides the underlying implementation technology of a distributed system (which may be several languages, technologies, etc). Hiding the heterogeneity of these systems simplifies a client developers job significantly, and allows authors of the distributed system to change internal systems as required. 
+
+\subsubsection{Middleware}
+The technologies used for providing an abstraction layer over a distributed system can be called Middleware.
+
+An example of a Middleware system is RMI. This allows calls to a distributed system to be abstracted into one object calling a method on another object (in much the same way as Object Orientated Programming). Invoking local and remote methods looks exactly the same - the message is just passed over the network. This typically requires some setup code, to configure management of the remote objects themselves (their names, locations, etc) so that methods can be invoked on them. The abstraction saves the programmer from needing to know about the underlying network protocols. 
+
+\begin{itemize}
+    \item \textbf{CORBA} (Common Object Request Broker Architecture) is a language and platform independent abstraction which allows multiple applications to work together towards the same goal. It is large and complex, and has fallen out of favour. It provides services for naming, persistence, transactions, etc.
+    \item \textbf{Java RMI} is a method of remotely invoking methods with other Java applications. Unfortunately it is not language or platform agnostic (it's restricted to the Java VM), but it is small and simple in comparison to CORBA.
+    \item \textbf{Java RMI-IIO} (Internet Inter-Orb Protocol) is a method of allowing RMI to communicate with CORBA.
+    \item \textbf{DCOM} (Distributed Component Object Model) is a way of enabling remote COM calls. It works with any COM language (as its an extension of COM). It was a major competitor to CORBA, but both are now largely redundant.
+    \item \textbf{.NET Remoting} is the .NET alternative to RMI. It is available to .NET languages, and is slightly more flexible than RMI.
+    \item \textbf{WCF} (Windows Communication Foundation) has largely superseded other Microsoft based distributed communications technologies.
+\end{itemize}
+
+\section{Socket Programming}
+Sockets are a standard introduced in 1981 to allow applications to communicate over a network or to another process. They are a relatively low-level interface which are created, used and released explicitly by applications. Sockets can send either TCP (reliable, byte stream orientated) or UDP (unreliable datagram) messages. 
+
+\subsection{TCP}
+In order to communicate via TCP (Transmission Control Protocol), the client must initiate a connection with the server (via a socket designed to respond to initial requests to connect) which opens a new socket for the 2 applications (Client and Server) to communicate over. The server uses port numbers to distinguish between different clients. After the client has connected to the server via a TCP socket (and the servers IP/Port) they establish a connection and can communicate.
+
+TCP is a stream based protocol (a stream is a sequence of characters that flow in or out of a process). There are both input streams and output streams. 
+
+\subsection{UDP}
+In UDP (User Datagram Protocol) there is no handshaking process or `connection' between the client and server as it is an unreliable transfer of data. The client must explicitly attach the destination details (IP and port) to each packet. Because it is not a stream-orientated connection mechanism (and there is no reliability) UDP packets can be received out of order, or may be lost entirely.
+
+\section{MPI}
+MPI (Message Passing Interface) is a standard for passing messages between different processes. The number of processes is allocated at the start of execution, and each is given a unique ID number. The process can alternately process information, and communicate with other processes. All processes in an MPI setup run the same program (but can branch based on ID number). 
+
+Message passing is a very portable way to create programs, as MPI is supported by various languages and platforms. It also has (fairly) simple debugging, and its easier to reason about, making it easier to create a deterministic program. 
+
+Each process is contained within an `MPD ring'. The mpd daemon (Message Passing Daemon) runs on each machine and manages the local processes. Communication across a network with multiple hosts (all with MPD) is supported using \textit{mpdboot}.
+
+MPI supports communication between 2 processes using a variety of commands such as \textit{MPI\_Send} and \textit{MPI\_Recv}. Both Synchronous and Asynchronous APIs are available. MPI is also capable of `Collective Communication' between all nodes, using \textit{MPI\_Bcast} and \textit{MPI\_Reduce}.
+
+MPI is the leading standard for message passing systems, although others exist. 
+
+\section{JDBC}
+JDBC (Java DataBase Connectivity) is a method of communicating with a database in Java (connecting, querying, etc). It consists of a standard interface to any relational database, with specific drivers for each Relational Database Management System (for example, a MySQL Driver). These drivers are the implementation of the JDBC interface. 
+
+JDBC contains many of the standard objects and functions that you would expect of an SQL API. A \textit{Connection} object represents the network connection to the server, and \textit{Statement} objects represent individual SQL Statements/Queries. Results are encapsulated within a \textit{ResultSet} object. Normal queries and update queries have separate method calls (\textit{executeQuery} and \textit{executeUpdate}) because an update is a solely side-effecting operation with no return value (so the method does not return a \textit{ResultSet}).
+
+Prepared Statements are supported via the \textit{PreparedStatement} class. This pre-parses the SQL and executes it by substituting in parameters. Parameters in a prepared statement are automatically escaped by the JDBC driver.
+
+There is also support for batched updates (via \textit{Statement.addbatch} and \textit{Statement.executeBatch()}) which can improve performance when using remove databases. 
+
+\subsection{JDO}
+JDO (Java Data Objects) is a method of persisting Objects to a database, without the programmer manually having to create explicit object-relational mappings. Presumably this is the same as most other ORMs (such as Hibernate).
+
+\subsection{ADO.NET}
+ADO.NET is the .NET equivalent of JDBC. It supports hierarchical storage as well as relational (for example, XML). 
+
+\section{RMI}
+RMI (Remote Method Invocation) is a way of abstracting network communication into calling a method on an object. An object will typically reside on one server, and interfaces to that object will be made available across the distributed system. A remote object is used to describe an object on a remote server, which is accessed via the interfaces that are sent across to all clients. 
+
+An objects interface must be described to clients. This is done via an IDL (Interface Definition Language). An IDL is particularly useful when a distributed system constitutes of multiple languages, technologies or platforms. The implementation of the object can be written in any language which supports the chosen IDL. 
+
+\subsection{Transience and Persistence}
+A transient objects lifetime stops when the server managing it is terminated. A persistent object survives past the lifetime of its current server. A persistent object has to be stored somewhere (usually a database), so that a new server can pick it up later. 
+
+\subsection{Serialization}
+Objects must be serialized so that they can be passed across a network. There are various forms of serialization. 
+
+Serialization typically takes a `deep copy' of an object, which makes it a very expensive operation (especially as an object may contain references to other objects, which can lead to the entire object graph of the application being serialized).
+
+\subsubsection{Bytestream}
+An object can be serialized into a stream of bytes and transmitted across to other machines. This is generally very efficient in terms of network overhead, as the object is sent in a very compressed form. It is also much less expensive to serialize and deserialize the object, as parsing is simple. However, bytestreams do not tend to be a very portable method of transferring objects, as the byte representation of objects will be different depending on the languages or platforms involved (.NET, Java and C++ all store objects in very different ways). Different platforms may also store primitive data types in different ways. For example, different processor architectures may store integers using big or little endian, or store floating point numbers differently. The client and the server must agree on the message format beforehand.
+
+Java allows an object to be serialized if it implements the \textit{Serializable} interface. The bulk of the work is carried out by the \textit{ObjectInputStream} and \textit{ObjectOutputStream} classes (with Output Streams serializing, and Input Streams deserializing). The \textit{writeObject} and \textit{readObject} methods on those objects are used to serialize and deserialize specific objects. 
+
+Certain properties may not need to be serialized. These can be marked as transient (using an Attribute/Decorator). 
+
+\subsubsection{XML}
+XML (Extensible Markup Language) is a text-based serialization format. It is a form of extensible markup which is designed to be readable by both machines and humans. Most programming languages support XML, having comprehensive support for serializing and deserializing into the format, making it a reasonably good choice for cross-platform development (although some criticism comes from the slow parsing speed, which is necessary in comparison to Bytestreams), and it has standardized ways of representing integers, floating points and other data types.
+
+Extensibility is one of the key attributes of XML. It can be used to express various documents and data structures, providing they have a hierarchal structure (as XML is inherently a tree). This allows it to express object graphs reasonably well (although some XML parsers can struggle with cyclic references). Custom schema's can be created for XML (through Document Type Definitions, or DTDs, or XML Schema's, or XSDs), which can be enforced by parsers. This allows systems to publish the schema of XML that they support, and require that clients follow that schema. 
+
+Whilst XML does have a method of serializing integers and floating point numbers (amongst other types), it has no actual support for them inherently. This can lead to parsers not knowing what to deserialize a type to (is it an int, or a numerical string?). XML is also sometimes criticized for being needlessly verbose, which can decrease the human readability and increase the required bandwidth to send messages.
+
+\subsubsection{JSON}
+JSON (JavaScript Object Notation) is an alternative text-based data serialization format, which is inspired from the object literal syntax is JavaScript. As such, it has defined data-types (string, number, date, array, object (or dictionary) and null) which vastly decreases the likelihood of data being incorrectly parsed. The simplicity that this affords is often cited as making parsing faster and easier (as basically all languages have native support for JSONs data types in some form or another), with some languages supporting JSON natively (such as JavaScript and Python). This advantage is most notable next to XML, where parsers have to define custom types to represent XML specific concepts (such as Documents, Nodes, CDataSections, etc).
+
+JSON is also generally less verbose, being a more lightweight solution, which can aid human readability and makes it use less bandwidth.
+
+Web development, particularly the proliferation of web services and communicating with them using JavaScript and AJAX has seen JSON become one of the main serialization forms used.
+
+However, the cost of JSON being more lightweight is a lack of formality. It has no support for the extensible features of XML, such as the ability to define custom schema's for validation. It also provides no functionality for attributes - it is a simple key-value pair mechanism of storing data (although values can be complex data types, such as arrays or nested objects).
+
+\subsection{Java RMI}
+Java has a specific implementation of RMI. As a `Java-only' solution, it is much simpler than a language independent solution such as CORBA. It is designed to fit in with the Java language as seamlessly as possible - calling a method on a remote object is basically seamless when compared to calling a method on a local object (as remote and local objects are type-equivalent). 
+
+\subsubsection{Remote Object References}
+In order to call methods on a remote object, the client must have a unique reference to the object. These references are called Remote Object References (ROR). This is a transparent mechanism of accessing or referencing an object, as ROR is the only way of doing so. 
+
+In order to ensure stability and correctness, each ROR must be completely unique. Even after an object is disposed of, its ROR should never be used again because an obsolete reference may exist elsewhere in the system. 
+
+Various methods could be used to generate an ROR. A GUID/UUID could be generated for each object. Java concatenates various attributes about the current system (the IP, Port number, system time and object number) to generate the ROR. This would appear to be a fairly reliable way of generating a unique identifier as the IP identifies the machine, the Port identifies the application and the System Time and object number provide uniqueness local to that process on that machine at that given time. Feasibly collisions could exist, if the IP address is reassigned to another machine with a different system time, or if the time of the original machine is changed. 
+
+Rather than have the overhead of looking up a Remote Object Reference, local objects are typically copied `by value'. The actual object itself is sent as a parameter (as in a typical method call), rather than the remote version of it. 
+
+Because of the cost of serialization, it is more expensive to send an object than a primitive value. In contrast, when sending a return value it is much less expensive to send an object than a series of primitive values. Whilst the object will still take up more bandwidth, each return value requires an individual remote method call, and the overhead of this is greater than the extra bandwidth used.
+
+\subsubsection{Proxies, Stubs and Skeletons}
+A ROR is not seen directly, as this would not be very `friendly' to program against. Instead, the ROR is used to create a \textbf{Proxy} or \textbf{Stub} object, which has access to the ROR and can therefore route calls to the appropriate remote object. The proxy object has the same interface as the remote object (making it transparent in code through polymorphism). When a method is called on the proxy, it will \textbf{marshal} (serialize) the client method invocation into a series of messages and send them to the remote object. When it receives a response it will \textbf{unmarshal} (deserialize) the response. This has a lot in common with the `traditional' view of Object Orientation as message passing.
+
+When the server receives the message, a \textbf{skeleton} object unmarshals the message and does the actual method invocation requested (calling the real object on the server). The return value is then marshaled by the skeleton, and sent to the clients proxy object.
+
+\subsubsection{Classes and Interfaces}
+There are various classes and interfaces in the Java implementation of RMI. 
+
+A user specified interface is used to describe the methods and properties of the remote object. This interface must inherit from the \textit{java.rmi.Remote} interface. Methods must potentially throw the \textit{java.rmi.RemoteException} to indicate that something has gone wrong with the remote invocation of the method. A client must be prepared to handle the \textit{RemoteException} as well as any application-specific exceptions. There may be little or no information on whether the call succeeded or failed when a \textit{RemoteException} is thrown, so the client and server must be designed with this in mind. 
+
+The actual class implementation of the remote object should inherit from \textit{UnicastRemoteObject}. This makes the object accessible remotely on a point-to-point basis. An object instance must be alive when the service is requested, and must be reachable using TCP/IP. If the object can be persisted, it should inherit \textit{Activatable}. 
+
+A \textit{MulticastRemoteObject} exists, and can be extended, but it is designed to allow replication. 
+
+Previously, a separate compilation step would be used to generate the Proxy/Stub code, but it is now generated as part of the standard Java compilation process. 
+
+\subsubsection{Registry Service}
+A registry service is used to locate other objects (using their Remote Object References). The server registers objects within the registry, and the client looks them up by names. 
+
+The registry is designed to hold a few objects which reference the other objects in the distributed system. This solves the problem of trying to find the first item in the distributed system (without having its RoR) so that other objects can be found. The registry should not contain all of the objects in the system. 
+
+The \textbf{rmiregistry} must be started before the server. 
+
+There are various security issues with the registry. Any program that runs on the same host as the registry can bind, unbind or rebind any object. Any client can look up objects in the registry. This could cause application-critical objects to be rebound with malicious objects by a compromised application on the same host, or an application getting a reference to an object and manipulating the distributed systems state. A security manager can be installed on the clients, which stops network connections unless they're explicitly enabled in a policy file. The security manager is only required on the registry if it also has a client installed on the same host. It is also not required if a client has all of its required objects locally (including any stubs). 
+
+As the registry is not a general object-finding service, it will typically return a factory object which can be used to bootstrap the rest of the distributed system. 
+
+\subsubsection{RMI Architecture}
+There are often cases where an application consists of operating on a set of elements. For example, a simplified model of banking can be seen as operating on a set of Bank Accounts. There are 2 primary ways to design a Java based RMI system to deal with a set of objects.
+
+\begin{itemize}
+    \item \textbf{Multiple Individual Objects}. In the example above, this would be having a remote object for every bank account. 
+    \item \textbf{One Collection Object}. This would be having a single remote object representing the set of objects. In the above example, this would be having a Bank remote object, which gives access to accounts. An alternative would be to have a subset of objects (i.e. multiple `bank' objects each responsible for a subset of all accounts in the system).
+\end{itemize}
+
+The 2 architectures differ in several ways. Depending on the application, different architectures will be more or less suitable. 
+
+\begin{itemize}
+    \item \textbf{Scalability}
+    Bank Accounts are self contained, location independent objects. They can therefore be distributed across physical machines relatively simply - the objects just need a JVM on any physical machine, and they can be registered in the distributed system. By contrast, a bank object is a monolithic object which does not spread to multiple servers very well. If a bank is spread across 2 servers, clients could access both simultaneously and try and access the same account, causing consistency problems (such as the account going overdrawn). This need to enforce scalability makes a bank object inherently less scalable. 
+
+    \item \textbf{Multi-Account Transactions}
+    Some transactions will inevitably involve multiple accounts. Depending on the type of transaction, accounts will need to either be accessed in serial (TODO: Example?) or will involve simultaneous access to several accounts (transfer from account A to account B). If the accounts have to be accessed in serial, then there will not be a significant performance difference regardless of the architecture (except for the cost of acquiring references, which only has to be done once for a bank). If accounts are accessed simultaneously there may be a significant performance difference. In the case of an inter-account transfer, 2 calls would be needed if every account has its own remote object, where with a bank it could be completed in one request. This difference would be more pronounced where lots of accounts are involved (for example, a payroll). 
+
+    Some consideration should be given to the fact that transfers between accounts are probably less common than simple deposits and withdrawals.
+
+    \item \textbf{Reliability}
+    If all of the Account objects are stored within one server (the bank) then there is a single point of failure in the system. It is sensitive to hardware (or JVM) failure, and risks corrupting a lot of data. The inherent complexity associated with having a Bank object may also increase the likelihood of failure. On the other hand, if each Account has its own server then an issue with one account is isolated to that account, limiting the damage that any failure can cause. In essence, Accounts are sand boxed from each other.
+
+    Another issue may arise in the case of joint bank accounts (or other places where an account could be accessed twice at the same time). If 2 people access an account, they are assigned different threads. These threads may interrupt each other or generally act in a way which corrupts the state of the account (essentially standard concurrency problems - deadlocks, race conditions, etc).
+\end{itemize}
+
+\section{Service Orientated Architecture}
+A software system can be thought of as a series of components which cooperate to achieve a goal (or to `service the needs of the system environment'). Conceptually, software systems can be decomposed into three layers. The Presentation layer, Application layer and Resource Management (data) layer. These layers logically separate the functionality of a software system. When implemented, the layers can be combined in different ways, referred to as `tiers'. 
+
+There are primarily 4 different basic types, based on the number of tiers. 
+
+\subsection{1 Tier}
+1 Tier software systems are typically legacy applications created on mainframes. An unintelligent client will connect to the mainframe which allows the user to communicate with the system, but fundamentally everything takes place on the mainframe. The single tier (the mainframe) contains the logic for all 3 layers. 
+
+This is a fundamentally monolithic approach to software design, which places an emphasis on efficient use of software resources, and places all of the cost in one machine (the mainframe, which acts effectively as a `server') rather than having to have comparatively expensive clients (as they is almost always more clients). However, the monolithic nature of 1 Tier systems makes them difficult to maintain.
+
+\subsection{2 Tier}
+With the advent of the PC, unintelligent terminals declined in popularity and the presentation layer was moved away from the centralized mainframe, and towards the (now more powerful) client machines. This allowed the presentation layer to utilize the newly available power of the client, but also allowed for a more flexible presentation tier, as it could be modified without increasing the complexity of the rest of the system. Different clients could have completely different presentation tiers, but use the same underlying system. This has become a popular architecture, particularly within client-server architectures. 
+
+As the number of clients increases, the performance overhead of the server can become problematic. Applications on the client side may also outgrow the server side portion of the application, requiring functionality which does not exist in the other tier of the system. This can lead to the presentation layer in the client calling multiple servers, each with different application logic. This approach causes heavier client applications, which are complex and dependent on several different services. The client has to carry out tasks which would typically be part of the application logic in order to tie together different services, and increased network load may also cause problems. Custom code added to clients to glue together services is also not reusable. As the client uses more and more services, it grows in complexity until it becomes difficult to maintain.
+
+\subsection{3 Tier}
+The 3 Tier architecture provides a clean separation between each of the layers, giving the application logic its own tier which sits between the client, and any back-end resources required. This `middleware' allows the presentation tier on the client, and the data tier on a server to adapt and change independently of each other. It forces the presentation tier to access the application/middleware tier, rather than the data tier directly, reducing the likelihood of bigger clients, the number of dependencies that the presentation tier has, and the lack of re-usability associated with putting application logic directly in the client. 
+
+3 Tier architectures are primarily intended to integrate different things together. The application tier can access several different data sources, and be accessed by several different clients. This decoupling is a powerful abstraction which simplifies software design.
+
+However, it can be difficult to integrate some systems together. Sometimes, existing 3 Tier systems must be integrated, or integration must take place with systems available over the Internet (rather than in a trusted, controlled networking environment). This problem is exacerbated by a lack of standards. There are a variety of interfaces and communication protocols which could be used to integrate systems.
+
+\subsection{N Tier}
+N Tier architectures aim to generalize even further, to allow for integration between multiple 3 Tier systems. The requirement for an N Tier architecture may stem from either
+\begin{itemize}
+    \item The need for an application to communicate with a more complex data source. Rather than just communicating with a database, an application may need to communicate with an existing 2 or 3 Tier system to access resources. For example, many modern web services (such as Twitter) are complex 3 Tier (or N Tier) systems themselves, but are used by other applications as a data layer.
+
+    \item An additional tier may be added by incorporating a web server into the presentation layer. As web servers are so complex, they can be regarded as a separate tier entirely.
+\end{itemize}
+
+Whilst N Tier architectures have evolved as a response to the issues with 3 Tiered systems, they still face some of the same issues. The lack of standards used in different systems will still cause problems in the disparate systems of an N Tiered application. Additionally, it highlights the large amount of middleware required to get multiple systems working together in a coherent fashion. This is especially true when there are multiple machines involved, each of which may be using custom middleware (requiring middleware between the middleware layers).
+
+\subsection{General Trends}
+It is clear that over time software systems have evolved from monolithic solutions implemented on one machine (usually a mainframe) to complex and decoupled systems with many tiers. Over time, software systems are increasing in complexity, but still need to be integrated with existing (sometimes legacy) applications. The Internet has enabled applications to connect together, changing the emphasis of software development from making individual, standalone systems to a collection of integrated applications, running in different physical, administrative and organizational locations. 
+
+There are still issues remaining. Chief amongst them is the lack of standards when communicating between systems. There is also the challenge of integrating different systems from different administrative domains. 
+
+\subsection{Services}
+As a way of responding to the issues of conventional, tiered systems, many applications are now being developed in a Service Orientated fashion. Service Orientated development encourages applications composed of several dynamic, loosely coupled services, which may exist in any organization. Services are invoked through messages, rather than the traditional object-orientated approaches.
+
+A service is defined via a contract. If the correct requests are sent, responses will be returned from the service as expected. 
+
+The primary differences between Services and traditional Tiered architectures are as follows.
+
+\begin{itemize}
+    \item \textbf{Decentralized Middleware}
+    In a tiered system, there is no obvious place to put a piece of middleware to support communication between 2 different organizations. Services expose an endpoint which any client can bind to, and the necessary functionality for finding other services and communicating with them is present in each service. This allows services to communicate and inter-operate freely, making it easier to communicate between organizational boundaries. Broadly speaking, each service can exchange information with any other service in the network without requiring human interaction (or having to modify the underlying program).
+
+    \item \textbf{Loose Coupling}
+    Each service within a Service Orientated Architecture is designed to be autonomous, with few (if any) dependencies on other services. Each service performs one task as an isolated unit of functionality, which can be combined with other services to build a more complex application. The loose coupling and high cohesion between services means that adding, replacing or changing a service is unlikely to adversely affect other components of the wider system.
+
+    \item \textbf{Standards Compliance}
+    Rather than using proprietary or custom communication protocols, Service Orientated Architectures promote the use of well-supported standards. This removes the requirement for additional middleware to integrate systems together, and makes integrated systems much easier. 
+\end{itemize}
+
+\subsubsection{Roles}
+There are 3 roles for participants in a Service Orientated Architecture.
+
+\begin{itemize}
+    \item The \textbf{Provider} publishes the service (via a Broker)
+    \item A \textbf{Broker} acts as a directory for services
+    \item The \textbf{Requestor} uses a broker to find, bind to, and use a service.
+\end{itemize}
+
+\section{Web Services}
+
+\begin{quote}
+    ``First we linked all of the machines together (Internet, TCP/IP), then we linked all the documents together (WWW, HTTP, HTML, XML), now we're linking all the applications together (Web Services, WSDL, SOAP, UDDI''
+\end{quote}
+
+Web services are designed to allow programmatic access to web resources. In the past, screen scraping has been used. This method is unreliable, as the structure and layout of a web page can change, rendering the screen scraping code broken. Traditional distributed systems technology has moved too slowly for the requirements of the industry, and web services are therefore being widely adopted as a method of allowing applications to communicate.
+
+Web Services use the existing, standards based protocols that the web is built on, such as HTTP or SMTP. This has the advantage of being ubiquitous and well understood. Middleware does not need to be installed on machine in order for them to communicate using HTTP, and web-based technologies are generally more firewall friendly than other protocols (such as those used by RMI).
+
+Typically, a web service will encompass a piece of business logic, and is usually accessed over the wider Internet (although web services can be exposed over an intranet). They do not necessarily replace existing distributed systems techniques, but provide a new method of exposing functionality to other systems. This allows larger scale distributed systems to be built, without having to worry about the underlying platform that any individual component is built on, as long as it conforms to the various web standards.
+
+Properties of Web Services are
+
+\begin{itemize}
+    \item They are platform and language independent
+    \item They are described using a Service Description Language (such as WSDL) which describes the interface (what requests can be made, arguments and transport protocol).
+    \item They are published to a registry of services
+    \item They are discovered through a standard mechanism (either at design or run time)
+    \item They are invoked through a declared API (usually over a network)
+    \item They can be composed with other services (a client can compose multiple web services, but a web service can also be a client)
+\end{itemize}
+
+\subsection{SOAP}
+SOAP is one method of developing web services. SOAP stands for Simple Object Access Protocol. It standardizes how data is sent over a variety of protocols (HTTP, FTP, SMTP) using XML. It supports both synchronous and asynchronous methods of communication. It can be used as an abstract form of RMI which is inter-operable. 
+
+\subsubsection{Message Format}
+SOAP generally uses an XML based format. The message is contained in a SOAP envelope, which in turn contains a body and a header. The header contains instructions to the SOAP processor that receives the message, and the body contains the XML document which constitutes the payload of the request. Namespace declarations and encoding style directives are added to indicate that the request uses SOAP (and to specify the SOAP version). 
+
+The body of the SOAP document represents the requested method call. The body should have a root element, indicating what the method is, and a series of either named or ordered sub elements which represent parameters to be passed to the method. The types specified for the arguments by the SOAP body must match up with the types on the actual method.
+
+The response from the server is structured similarly. The root of the SOAP response body is conventionally the same as the the request, with `Response' appended. Sub elements represent one or many values returned from the method.
+
+\subsubsection{WSDL}
+WSDL (Web Services Description Language) is a standard method of describing the interface of a web service using XML. It allows clients to recognize how to communicate with a web service automatically. It is a type Interface Description Language, similar to those used to describe the interface of a remote object. Whilst it allows clients to automatically determine how to communicate with the service, it adds complexity to the web service.
+
+WSDL documents can often be auto-generated. The Java2WSDL tool generates a WSDL document for a compiled Java interface or class, and some SOAP containers such as Apache Axis will automatically generate WSDL documents if they're requested from the application code (such as a JAR file) that they are given. 
+
+\subsubsection{Runtime Environment}
+SOAP services are typically use web server software to host the service, as HTTP tends to be the chosen method of transport. There are also custom implementations specialized for SOAP. Sun provide an implementation which is integrated into J2EE 1.4, and alternative implementations are provided by IBM, and the Open Source project Apache Axis. Microsoft provide support for SOAP services in the .NET framework. 
+
+The JAX-RPC library is provided by Sun in order to communicate with existing SOAP services. An alternative is to use the WSDL2Java tool to generate a set of stubs from a services WSDL document. These stubs act as an abstraction on top of the message passing system of SOAP, so that it appears to a developer to be like a normal method call (in the same way as RMI). If stubs are generated, the client becomes static (as it can't change its implementation), where if it parses WSDL documents and uses them to define how to call methods, the client can automatically adapt over time (with the server). 
+
+\subsection{REST}
+Representational State Transfer (REST) is an alternative architectural style for web services. It originates from a 2000 PhD thesis by Roy Fielding. The driving principal of REST is that the standard protocols and principles of the web are sufficient for creating robust web services, so the additional complexity of SOAP is not needed. Whilst RST is not a standard in and of itself, it makes heavy use of the existing standards of the web. In particular, it is associated with HTTP, XML, JSON, URIs and sometimes HTML. 
+
+At its core, REST is relatively simple. Application state and functionality is divided into \textbf{Resources} (for example, a person might be a resource). Each resource has a unique identifier through which it can be accessed (using a URI, typically a URL as defined in HTTP). A constrained set of actions can be performed on resources, as defined by the common HTTP verbs (GET, POST, PUT and DELETE), although some of these might not apply to all resources, or might be limited in some form (it might not make sense to delete some resources, or authentication and authorization might be required). The principals of REST do not specify any particular content-type for communication, but text based markups (primarily JSON and XML) are by far the most popular content types used.
+
+As REST heavily utilizes the existing HTTP protocol (and other web protocols and technologies) it is several architectural properties common to the `traditional' web. It is a client-server model with layered protocols, which almost entirely stateless and has caching support. In a well designed REST service a resource can be retrieved in a fashion basically indistinguishable to how a web browser requests a document. 
+
+Resources are requested and modified through the standard HTTP verbs.
+\begin{itemize}
+    \item \textbf{GET} is the keyword primarily associated with retrieving content. It is analogous to READ in the CRUD acronym commonly used for databases.
+    \item \textbf{POST} is often used to create resources, although it can be used to edit them. The primary difference between POST and PUT is impotence - POST is a non-idempotent action (i.e. calling the same method with POST twice can result in different responses). If there are different URLs (or payload formats) for editing and creating a resource, and a POST is sent to create a resource where it already exists, this could be considered an error. By returning 2 different results (create successfully if it exists, error if it doesn't) this request becomes non-idempotent. Likewise, if resources are created by sending a request to a `factory' URL (such as http://api.foo.com/myresource/) without the eventual URL of the resource being known (such as when IDs are auto incrementing, or when adding to a collection - http://api.foo.com/myresource/4) the action is also non-idempotent, as the same URL is being used in a request with different results (different resources being created). This would necessitate a POST. 
+    \item \textbf{PUT} is typically used for editing a resource. Unlike a POST, PUT is idempotent, so no matter how many times the action is performed it will always have the same effect. This means that PUT requests can be retried or resent several times without causing unexpected behaviour (whilst this is not guaranteed with POST). It is often used to edit existing resources, as the resource which is sent will always replace any existing resource at that location (making it an idempotent action, as sending the same resource several times will have the same effect). PUT is also sometimes used to Create a resource, if the URL of the resource (subsequent to its creation) is already known (for example, PUTting to http://api.foo.com/users/blah would either create or update the user `blah' to make the resource at that address the same as the one sent in the request).
+    \item \textbf{DELETE} is used for deleting a resource.
+\end{itemize}
+
+\subsubsection{Content Negotiation}
+RESTful web services can return content in lots of forms. In order to determine which format the data should be returned in, clients can use the \textbf{Accept} header defined by the HTTP standard to define the acceptable return format. Valid values for the Accept header could be any MIME type, such as application/xml or application/json. Additionally, vendor specific MIME types can be used, which is often used for API versioning, or ensuring that responses conform to a custom schema.
+
+\subsubsection{HATEOAS}
+One of the key principals of REST is HATEOAS (Hypermedia As The Engine Of Application State). This defines a constraint on REST services that any client must interact with the service entirely through hypermedia generated by the service. This means that the client does not require any particular knowledge about a web service to interact with its contents, other than an understanding of hypermedia and an initial fixed URL of the service. This allows a client to navigate through the web service with little (or no) initial understanding of the resources, which provides a high level of decoupling between the client and the server, allowing them to evolve independently.
+
+HATEOAS is an extension of the `Uniform Interface' constraint of the REST architecture.
+
+Despite being one of the primary goals of the REST application architecture, HATEOAS is rarely implemented in commercial web services. 
+
+\subsubsection{Resource vs Representation}
+REST defines a distinction between a \textbf{Resource} and \textbf{Representations} of that resource. A resource is a conceptually entity usually present as part of the applications domain (for example, users or pets). A client communicates with the system by requesting and (perhaps to a lesser extent) performing modifications on Representations of a resource. For example, a service may have a concept of a user. A client could request a particular user object in XML, localized to German. It would be semantically the same as requesting the same object in JSON and French. They are simply different \textbf{representations} of the same \textbf{resource}.
+
+\subsubsection{Advantages}
+There are several proposed benefits of using REST as an application architecture.
+
+\begin{itemize}
+    \item \textbf{Improved Response Times} due to fundamental support for caching (by virtue of using HTTP) and the smaller size of requests (due to the lack of a SOAP envelope). SOAP messages cannot be cached as they always use POST (a non-idempotent action) for all types of request (and the type is specified in the SOAP body). By contrast, REST systems can cache any idempotent operations (GET, PUT and DELETE - although usually only GET).
+    \item \textbf{Improved Scalability} due to the lack of state (again because of HTTP) any server can handle any request, regardless of whether another server has handled a previous request from the same client. This greatly simplifies load balancing. 
+    \item \textbf{Standards Compliant}. REST is based entirely on existing open standards and protocols which are well defined and understood (such as HTTP). This reduces the need to have vendor software or other mechanisms that layer additional messaging frameworks on top of existing standards (like SOAP, which is another framework on top of HTTP/SMTP/FTP/etc).
+    \item \textbf{Feature Parity} to alternative methods of communication (such as SOAP).
+    \item \textbf{No need for Resource Location} as HATEOAS makes it redundant. This simplifies the process of making a client. This is also provided through having a Generic Interface, which means that tools do not have to be customized per application (as they would have to be with SOAP). They merely need to understand the basic principals of HTTP. 
+    \item \textbf{Compatibility/Evolvability} of services, as there is greater support for versioning. Different content types can be used to represent different representations, including different versions of the same representation (for example, HTML4 and HTML5). This also allows additional capabilities to be added to resources without breaking older clients (as newer representations can expose the new functionality).
+    \item \textbf{Inspectability} of messages. REST interactions can be analysed much easier than SOAP messages, as the semantics of every SOAP application would have to be understood individually, whereas for REST only the principals and semantics of HTTP need to be known. This makes it easier to implement proxy servers or gateways which filter out certain types of interactions. 
+\end{itemize}
+
+REST is currently growing in popularity amongst those requiring web services, partly due to its ease of implementation. Many companies are using it to expose their data and allow integration with their applications and platforms. REST is often considered to be faster than SOAP (with Amazon quoting their REST services being up to 6 times faster), and more popular (with around 80\% of Amazon's clients opting to use the REST interface over SOAP).
+
+SOAP is typically used to integrate internal systems, or larger, more complex applications which require a higher degree of formality in their communications. SOAP can have richer functionality, but it comes at the expense of interoperability with other systems. 
+
+\subsubsection{Java and REST}
+Java implements REST support via the Java Specification Request (JSR) 311 (otherwise known as JAX-RS). JAX-RS uses annotations to define how classes are relevant to REST. Either XML or JSON can be used via JAXB (Java Architecture for XML Binding).
+
+The reference implementation of JAX-RS is Jersey, which provides both a REST client and server. It uses a scanner to identify REST resources (using reflection?) and expose them using a servlet. A Web Application Description Language (WADL) document is generated (which is similar to a WSDL) and automatically exposed by the servlet. 
+
+\section{Naming}
+In order to get access to a resource, they must be named. Whether that resource is a computer, printer, document or web page, it must be identifiable by a name of some form. Names could be human readable, or might be a string of bits or characters. 
+
+A name represents a series of attributes of an entity. One of these attributes will typically give access to the entity. Changing a name into its related attributes is known as `Resolving' the the name. The archetypal example of a name resolution system is DNS (Domain Name System).
+
+\textbf{Access Points} are ways of actually operating on an entity or resource. The name of an access point is usually referred to as its \textbf{Address}, which is also usually thought of as the address of the entity itself. A resource can have several access points, and they can change over time. Because of this, a location-independent name is usually chosen for resources. 
+
+\subsection{Naming Services}
+The responsibility of a Naming Service is to manage the relationship between resources and attributes, primarily translating the name of a resource into its attributes (performing name resolution). It is also responsible for creating, deleting and listing the bindings between resources and attributes, and organizing the the collection of valid names recognized by the service (the \textbf{Namespace}). 
+
+\subsubsection{Namespaces}
+The namespace is the collection of valid names recognized by the service. They can either be flat or hierarchical. 
+
+\textbf{Flat Namespaces} are usually finite in length, as the size of the names is usually limited. For example, if names were based on 32-bit integers, there could only be 2,147,482,657 items in the namespace. 
+
+\textbf{Hierarchal Namespaces} can grow indefinitely as each part of a name is resolved relatively to parent elements, so name fragments can be reused across different components. The different contexts (subtrees formed from children) can be managed by different individuals too, aiding administration of large namespaces. A hierarchical namespace can be visualized as a graph with leaf nodes and `directory nodes'. Leaf nodes store the actual entity attributes, where directory nodes are used to navigate to the appropriate leaf. Common examples of a hierarchical namespace would be a file system or DNS. A file system has directory nodes (actual directories, or folders) which are used to allow multiple documents to have the same name and to help navigate to a document, and have leaf nodes (the actual documents) which store the contents. A file system also shows that a hierarchical namespace graph does not have to be a tree - symbolic links can be used to reference the same document from multiple directories. 
+
+In order to find nodes, an initial starting point must be known. In a file system, this is traditionally the first inode of a logical disk (which can in turn be calculated by information from the disks superblock). In other systems, some starting point must be defined (like a name server address in DNS).
+
+Hierarchical Namespacing is a much more scalable technique. It allows an infinite number of names to be stored (as you can merely add layers to the graph) and allows different parts of the graph to be administrated by different people. By partitioning the graph, and allowing parts of it to be replicated (caching close to points of need) the system can be very scalable and resilient. These properties are perhaps best shown in DNS. Name servers contain attribute data for the names in their domain, and also hold references to other name servers (authoritative name servers for delegated sub domains - children, and at least 2 servers with authoritative data for the zone - parents). Any name server can replicate information from another, as long as it informs its clients that the name record is not authoritative (i.e. it is replicated, and therefore may be inconsistent), and that it stores a time to live after which it will contact the authoritative name server to verify the data is still correct. 
+
+\section{Directory \& Discovery Services}
+Directory and Discovery Services are used to find entities within a graph. They offer alternative approaches for performing the same action - a directory service looks up a resource by its name, where a discovery service finds a resource which matches some specification. 
+
+\subsection{Directory Services - DNS}
+A directory Service is used to look up entities based on their names. The most prominent example of a directory service is DNS.
+
+\subsubsection {DNS Resource Records}
+\begin{itemize}
+    \item \textbf{SOA} (Start of Authority record) used for zone parameters
+    \item \textbf{NS} (Authoritative Name Server) used for domain names
+    \item \textbf{A} (Computer Address) used for IP Addresses
+    \item \textbf{CNAME} (Canonical Name) The canonical domain name for an alias
+    \item \textbf{MX} (Mail Exchange) Information for mail exchange (Email), such as preferences and the hostname
+    \item \textbf{HINFO} (Hosting Information) Hosting information for this node (such as architecture and OS)
+    \item \textbf{TXT} (Text) Arbitrary text information
+\end{itemize}
+
+\subsubsection{DNS Zones}
+The hierarchical DNS database is split into 3 zones. The \textbf{Global} zone is the highest level (responsible for .com, .edu, etc) and is worldwide. There are a small number of nodes at the global level, which means they may take a matter of seconds to respond to requests. This is combated by having a high level of replicas lower down the chain. Updates are propagated lazily though the graph. The second level is the \textbf{Administrative} zone. It takes place on an organizational basis (i.e. .yale.edu, .microsoft.com, etc). There are a much higher number of nodes at this level, which makes it comparatively faster to look up (in the scale of milliseconds). Updates are immediately propagated and there usually aren't many replicas (if any at all). Finally, there is the \textbf{Managerial} zone, which is geographically appropriate to a department. There are millions of managerial nodes worldwide, and they therefore don't tend to have replicas, but can respond to a lookup immediately. They also don't always apply client-side caching, where both of the higher tiers do. 
+
+\subsubsection{DNS Lookup}
+DNS Lookup can be \textbf{Iterative}, \textbf{Recursive} or \textbf{Multicast}.
+
+\textbf{Iterative} resolution relies on the client going to the root server and requesting the next lowest, and iteratively applying the process until it reaches the correct node. For example, in leeds.ac.uk, the root server would be consulted which would return the .uk server. The .uk server would return the .ac and the .ac would return the .leeds node. The key behind this is that the \textit{client} is requesting from each name server.
+
+\textbf{Recursive} resolution relies upon the first server directly asking the second server, and so on and so forth (rather than simply pointing the client and telling it to ask). The original name server will then respond to the clients request directly (so there is only one request visible from the client). Recursive name resolution places greater demand on the name server, so some name servers with particularly high throughput may not support it (for example, in the global layer). However, in a recursive solution the name servers can cache addresses, gradually learning about more name servers which handle lower-level nodes and passing this benefit on from that point onwards. In an iterative resolution approach, only the clients name resolver gets the benefit of the cache (and other clients won't). A recursive approach may also reduce the communication overhead, depending on the overhead between name servers (they will probably have better connections and less latency between each other than between a client and name server).
+
+\textbf{Multicast} resolution requires the name to be broadcast to all name servers, and the one that is holding the binding for the name responds. An additional server is required, to handle what happens if a name is not bound. 
+
+\subsection{Directory Service}
+A Directory Service is an alternative to a naming service. Rather than resolving a node in the graph from its name, a description is stored at a node, and a partial description can be used to retrieve a node (and possibly similar nodes). It is conceptually similar to using the Yellow Pages (give me the phone number for a plumber) rather than using a telephone book (give me the phone number for John Smith). It can be regarded as the opposite of a naming service, as it allows an entity to be looked up by its description (or properties) as opposed to name. It is useful for when a client needs a service, but doesn't really care what actual entity provides it.
+
+\subsubsection{X.500}
+X.500 is part of the Open Systems Interconnection (OPI) set of standards. It is popular due to lightweight implementations created as Internet services. Data is organized into named nodes in a tree structure (the Directory Information Tree, or DIT). The entire structure, including the data contained within the nodes is known as the Directory Information Base (DIB). The aim of the system is to have a globally unique name for each leaf node, which has lead to a global DIB distributed across many servers (like DNS). 
+
+The primary difference with X.500 and DNS is that X.500 is query-able. For example, it would be possible to search for all departments in the University of Leeds. However, searching is generally expensive as it may need to access several leaf nodes and combine results. An example of a query would be \begin{quote}search("\&(C=GB)(O=University of Leeds)(OU=*)")\end{quote}.
+
+\subsubsection{LDAP}
+LDAP (Lightweight Directory Access Protocol) is an alternative to X.500 and its Directory Access Protocol. Where X.500 (and the associated protocol) is complex and difficult to use, LDAP is implemented on top of TCP, which provides a much simpler interface for accessing X.500 services. It is now seen as the standard for Internet based directory services (for example, Microsoft's Active Directory has an LDAP interface). 
+
+\subsubsection{UDDI}
+UDDI (Universal Discovery, Description and Integration) is a solution to the problem of finding web services. It is a discovery service which provides WSDL data for web services in response to requests from clients. It allows clients to find web services which implement certain functionality, and are compatible with them. 
+
+The service provider creates a UDDI business registration (which is XML) and publishes it. These business registrations are stored in a UDDI Business Registry, which is replicated throughout UDDI Operator Sites. The registry itself is a web service, so it can be communicated with using SOAP over HTTP. Relevant messages can be constructed or parsed by calls to an inquiry API and a publishing API. There are several implementations of UDDI, including for .NET (UDDI.NET) and Java (jUDDI). 
+
+\subsubsection{Spontaneous Networking Environments}
+In a spontaneous networking environment, clients can connect without warning, and without preparation (by administrators). The services available are also spontaneous, and may disappear and appear without warning. In order to deal with this unreliable environment, there must be support for automatic registration and de-registration of services, and the discovery of available services by a client. Spontaneous networking environments are one of the perceived problems of distributed systems, and there are various solutions to these problems. Jini (or Apache River) is a networking architecture developed by Sun which allows for modular services co-operating services to be used to construct a distributed system.
+
+\subsection{JNDI}
+JNDI (Java Naming and Directory Interface) is a Java API for discovering and looking up data or objects by name (its a directory service). As an interface, JNDI is independent of the underlying implementation. It specifies a Service Provider interface, and allows any directory service implementation to be plugged into the framework (for example, a remote server, a flat file, a database).
+
+The API provides a way to bind an object to a name, and a lookup interface which allows for general queries. There is also an event system, which allows clients to determine when an entry has been modified.
+
+Functionality for JNDI is implemented in \textit{javax.naming} (especially in the \textit{Context} interface and \textit{InitialContext} class). The starting location for a lookup is the \textit{InitialContext} class, which has a \textit{lookup} method allowing for objects (including sub-contexts) to be looked up by name. An object can be added to a context by the \textit{bind} method. 
+
+Both flat and hierarchical contexts are supported (for example, the flat RMI registry and a file system), as is LDAP.
+
+\section{Timing and Synchronization}
+One of the major problems of distributed computing is that there is no centralized, globally agreed upon time. Where in a centralized system, the current time is unambiguous (not necessarily correct, but consistent) this assumption does not hold in a distributed environment. 
+
+\subsection{Time Standards}
+The current standard for time was defined in 1958 as the time it takes for caesium 133 atom to make 9,192,630,770 electronic transitions (prior to 1958 and the invention of the atomic clock, mean solar seconds were used). 50 laboratories around the world measure the number of atomic clock ticks since the 1st of January 1958, and this is averaged to produce the International Atomic Time. As the mean solar day is getting longer, leap seconds are introduced to recalibrate the time (so noon does not get earlier). This occurs whenever there is a discrepancy of 800 ms between atomic and solar time.
+
+The time based on TAI (atomic time) and including leap seconds is called Universal Coordinated Time (UTC). UTC synchronization is performed via satellite or radio transmission.
+
+\subsection{Drift}
+Every machine has an internal physical clock, which uses a quartz crystal to measure the time. Each crystal oscillation decrements a counter, and when it hits 0 a timer interrupt (a clock tick) is generated, and the counter is reloaded. Battery powered RAM stores the number of clock ticks since a known point (an epoch), so the system can determine the date and time. However, crystals will run at different rates, causing clock skew between different machines.
+
+Ideally, at a UTC time of $t$ with the value of a clock $C$, $dC/dt=1$ (i.e. the clock should tick). This may not be the case due to clock drift. When a clock has drifted past a maximum drift rate, it is determined to not be working correctly. Currently, clocks are generally accurate to within $10^{-5}$. By having a maximum drift rate ($p$), 2 clocks within a distributed system can be guaranteed to be within $2p \theta t$ at time $\theta t$. This occurs because both clocks may be drifting away from UTC at a maximum of $p$, but in opposite directions (one moving fast, one moving slowly).
+
+\subsection{Christian's Algorithm}
+Christian's algorithm presents a way to solve timing and synchronization issues by using a centralized UTC server. A machine with a UTC receiver is deemed the \textbf{time server}. Every machine sends a message periodically (not exceeding $\theta C / 2p$ seconds) to the time server, requesting the current canonical time. The server responds as quickly as possible with the current time according to UTC. 
+
+This introduces 2 major problems. The first is clocks that may be running quick. If they adjust to use the canonical time immediately, it would appear to applications as though the system has gone back in time. This may cause issues (such as resources being deleted before being created in audit trails, etc). In order to deal with this, a fast client must adjust its time gradually. This problem does not affect slow clients, as they can merely `skip' a few seconds. 
+
+The second major issue is network latency. The message containing the current UTC time will never arrive instantaneously, and will therefore be incorrect when it arrives at the client. It will be more incorrect the bigger the network latency. One method of estimating the amount of time it has taken for the message to arrive is to measure the time between request and response, and to divide it by 2 to approximate the cost of the message going in one direction. 
+
+\subsection{Berkley Algorithm}
+In the Berkley algorithm, there is a time daemon which asks all of the machines in the system what the time is according to their internal clocks. All of the machines in the system answer, and the time daemon informs all of its clients how to adjust their clocks. This is a useful technique for when a UTC reference point is not present. The Berkley algorithm will simply average the clocks of the clients to determine the correct canonical time within the system.
+
+\subsection{Network Time Protocol}
+In order to send timing information over the Internet, NTP is used. Christian's and Berkley Algorithms are not suitable to the Internet, as they require either a centralized daemon or time server. It provides a reliable service which can survive losses of connectivity, and provides an authentication layer to prevent interference with the service (malicious or otherwise). Clients can resynchronize frequently enough to offset common drift rates.
+
+In order to maintain scale, NTP forms a logical hierarchy (called a synchronization subnet). Primary servers (those in stratum 1) are connected directly to the time source (the UTC reference point). Secondary servers synchronize with those in stratum 1, and so forth. Leaf nodes are individual users workstations. The accuracy of the time decreases proportionally to the layer of the strata (the bottom layer having the least accurate time). 
+
+NTP is a highly robust service, which has been widely deployed throughout the Internet for a number of years. It is generally recognized as the best in class solution for unreliable networks, providing accurate timing information to within a few milliseconds over the Internet, or within sub-milliseconds on local networks.
+
+\section{Current Trends}
+Over time, several trends have emerged in distributed systems. These are often driven by the enterprise, which seeks to integrate disparate systems together (to provide business value), manage ever-complex IT systems (databases, Operating Systems, networks, storage, new application development) and to plan for new vendor techniques and technologies.
+
+\subsection{On-Demand Computing}
+On-Demand computing is becoming a popular model in response to the challenges of enterprise IT. Computer resources are acquired and used on a basis determined by demand. When computer resources are needed, they are utilized and when they are not they are discarded. 
+
+If an enterprise plans for its peak requirements, they may end up paying a large amount for computer resources that they don't need the majority of the time. However, if they only purchase the minimum resources, they will face problems when they reach the peak of their utilization. For example, an online shop might use several times the amount of computing resources around Christmas time. They don't need that level of resources any other time in the year, so purchasing that amount of infrastructure would be a waste of money for the rest of the year. However, without those resources they cannot capitalize on the Christmas rush. The flexibility of On-Demand Computing is crucial in meeting these fluctuations in demand.
+
+\subsection{Utility Computing}
+The concept behind utility computing is to provide a service whereby organizations outsource their demand for computer resources to other companies, who act as external service providers. The resources that they use from the external service providers are paid for on a per-usage basis. Customers access their computing resources over a network (typically the Internet, but it could be a private network) and pay for the length of computing time that they use. 
+
+This is analogous to other common utilities, such as gas or electricity. Electricity, for example, is acquired from power companies (service providers) and sent through the power grid (similar to the Internet). The customer pays for how much electricity they use (as opposed to a one off, or constant cost payment) and can scale their usage of power up and down as required (for example, more in winter but less when they're on holiday abroad).
+
+\section{Grid Computing}
+Grid Computing is a type of utility computing. Grids are typically geographically diverse networks consisting of a (potentially) large number of commodity computing resources, connected together to provide unlimited storage and computing capacity. The Grid aims to facilitate the sharing of everything (where the Web aims to facilitate the sharing of information). 
+
+The main problem that Grids attempt to solve is the sharing of computer resources between dynamic collections of individuals, organizations and institutions. These communities (or \textbf{virtual organizations}) can share computing resources as they pursue common goals. 
+
+The concept of a grid has transformed research, business, medicine and engineering.
+
+According to Ian Foster, there are three major requirements for a grid system.
+
+\begin{itemize}
+    \item \textbf{Co-ordination of resources that are beyond central control (are across multiple domains)} involves authentication, authorization, accounting (auditing) and distributed algorithms.
+    \item \textbf{Standard, Open, General-purpose protocols and interfaces}
+    \item \textbf{Non-Trivial Quality of Service} including the guaranteed ability of remote access, resource management, fault management (and tolerance), guarantees of performance and monitoring.
+\end{itemize}
+
+There are various national grids in the UK, with the one based in Yorkshire being the White Rose Grid (which connects Leeds, York and the Sheffield universities).
+
+\subsection{Technical Challenges}
+There are various challenges associated with Grid Computing.
+
+\textbf{Security and Trust} is a persistent problem, as there is no central control over a Grid since it spans across administrative domains, and possibly across nationalities.
+\textbf{Resource Stability} is also an issue, as the characteristics of resources can change over time and location.
+\textbf{Complex Distributed Applications} are a natural fit for the grid, and come with complex requirements for resource allocation and complicated work-flows.
+\textbf{Guaranteed performance} in a situation which is always changing, with heterogeneous platforms. The Grid must also be fault tolerant.
+\textbf{Virtualization} of resources.
+
+\subsection{Open Grid Services Architecture}
+The Open Grid Services Architecture (or OGSA) is motivated by the need to integrate services across distributed virtual organizations, all with different platforms and technologies. It is designed to focus on the nature of the services in the grid, that respond to particular messages. In other words, it is a way of seeing the grid as a extensible set of services.
+
+This vision can be combined with web services to inherit many of their advantages - such as service description and discovery. However, grid services (and web services in general) tend to provide clients with the ability to view and modify the state of entities (resources). Whilst services are usually designed in this manner (despite the stateless nature of HTTP), there is no explicit interface indicating that the service is stateful.
+
+The Web Service Resource Framework (WSRF) is designed to solve this issue. WSRF is a set of 5 technical specifications, defined in terms of message exchanges and XML definitions. It allows web service resources to be declared, created, accessed, monitored or observed for change, and destroyed via conventional web service mechanisms. OGSA requires WSRF to be in place, where WSRF acts as an extension to conventional web services.
+
+\section{Cloud Computing}
+Cloud Computing has become a major trend in distributed systems, by offering On-Demand, Utility computing. A combination of servers, connections, software and services are made available over the Internet in a (fairly) transparent manner. This network is known as `The Cloud'. Having access to the cloud allows users to have a great amount of computing power from the most basic devices (such as mobile devices or thin clients). It also lets organizations scale their computing resources according to demand.
+
+The primary differences between the Grid and the Cloud are that the Cloud is usually centralized (having one supplier, such as Amazon) where the Grid is decentralized, and the Cloud offers On-Demand services (where this is not one of the priorities of the Grid).
+
+Technology companies are increasingly embracing the Service Orientated Economy. They are increasingly outsourcing parts of their technology stack (for example, using Salesforce) to reduce complexity and cost. This leads to the requirement of Service Orientated Infrastructure to cope with this new demand.
+
+\subsection{Definitions}
+There are various definitions of Cloud Computing.
+
+It can be seen as an information technology infrastructure in which computing resources are virtualized and access as a service. Clouds are a large pool of easily usable and accessible virtualized resources. Resources can be dynamically reconfigured to adjust to a variable load (scale), allowing also for an optimum resource utilization (elasticity). This pool of resources is typically exploited by a pay-per-use model in which guarantees are offered by the infrastructure provider by means of customized Service Level Agreements.
+
+\subsection{Providers}
+There are several providers of Cloud Computing. Amazon EC2 (Elastic Compute Cloud) is one such service which allows a resizable amount of computation capacity. It allows for new capacity to be obtained on demand with little friction, and reduces the amount of time taken to acquire, provision and boot servers significantly, allowing capacity to be scaled very quickly (providing true On-Demand computing). 
+
+There are several alternative Cloud Computing providers such as Microsoft Windows Azure and Rackspace. 
+
+Cloud providers will typically have 10s to 100s of thousands of physical machines, usually together in data centres. This means that cloud providers are usually large companies, with existing large amounts of infrastructure. For example, Amazon had a large amount of infrastructure for running their e-commerce platform, and could use this hardware and experience of running data centres when starting their cloud business.
+
+\subsection{Benefits}
+Cloud computing offers numerous benefits. From a technical perspective, it allows on-demand scaling of resources in real-time to scale to increases in demand (a property sometimes referred to as elasticity). It provides hardware consolidation and platform homogeneity through virtualization, which helps to avoid problems with lock-in. Virtualization also affords simpler hardware provisioning. Finally, it has the benefit of transparent resource management, in terms of fault-tolerance and other automation.
+
+From an economic perspective, it means businesses do not need to set up their own infrastructure - reducing capital expenditure and therefore lowering the barrier to entry in many industries. This also takes the burden of maintenance away from the individual business, and gives it to the cloud service provider, decreasing the cost of maintenance. 
+
+\subsubsection{Use Cases}
+There are various use cases for Cloud Computing. A cloud can be used to provide a user with a service, or to allow a business to provide a service to the user. Clouds can be used to share infrastructure or applications between businesses (for example, a supply chain), or private clouds can be used within an enterprises premises. A hybrid solution, using many private and public clouds could be used to combine resources of lots of cloud providers together, or to ally external cloud functionality with a private cloud.
+
+\subsection{Taxonomy}
+There are 3 main types of service layer within a cloud. Any of these 3 service layers can be exposed to the client, and lower layers in the taxonomy are hidden from them.
+
+\subsubsection{Software as a Service}
+Software as a Service (SaaS) is an alternative to applications which are traditionally run locally. Users may pay a monthly fee, or for how much resources they use. Examples of Software as a Service would be Salesforce, or Google Docs.
+
+\subsubsection{Platform as a Service}
+Platform as a Service (PaaS) is a software stack which facilitates deployment of applications. For example, a web application could be hosted on a cloud provided web server. This removes the responsibility from the client to configure web servers (or other similar software) in a secure manner.
+
+\subsubsection{Infrastructure as a Service}
+Infrastructure as a Service (IaaS) is the lowest level in the taxonomy. In IaaS the customer gets access to the virtual machine, and can install their own Operating System and associated software on it. It requires the greatest amount of set up and configuration, but gives the user the associated flexibility. In IaaS the core principals of elasticity still apply, and customers benefit from the networking, physical hardware and other Infrastructure resources that the cloud service provider has built up. 
+
+\subsection{Typical Architecture}
+A typical cloud architecture will have the System level consisting of lots of commodity computing resources (such as servers). 
+
+A layer of core middleware will sit above, providing Virtualization (for virtual machines and VM management), and various business functions (Quality of Service, Pricing, metering, SLA Management, Accounting, Billing, etc). 
+
+Above this will be the cloud programming environments and tool, possibly connected to an Application Hosting Platform. This consists of various libraries, workflows and tools which allow applications to be developed for the cloud. 
+
+Finally, there is the users cloud application. 
+
+\subsection{Virtualization}
+Virtualization is a key technique in Cloud Computing, as it allows multiple services to be run on one server in isolation, including isolation of platforms like Windows or Linux (allowing them to co-exist simultaneously on the same physical machine) reduces complexity, and allows for the consolidation of servers (reducing cost). It also allows for quick configuration and administration of servers, as they can be run from a preprepared virtualized image, mounted to a virtual server, rather than having to be created from scratch and installed on physical hardware. Finally, it creates a simplified, sandboxed environment from which pay-per-usage business models can be set up with reasonable simplicity. 
+
+There are 4 types of virtualization.
+
+\begin{itemize}
+    \item Full Virtualization
+    \item Hardware Assisted Virtualization
+    \item Partial Virtualization
+    \item Hybrid Virtualization
+\end{itemize}
+
+The operating system running within a virtual machine is known as the \textbf{Guest Operating System}.
+
+\subsubsection{Virtual Infrastructure Manager}
+A Virtual Infrastructure Manager allows resources to be provisioned on behalf of the end user. It stages images, creates resources, migrates them and terminates them when necessary. It also tracks resource usage (both physical and virtual) and provides user access control limitations.
+
+The VIM controls and monitors the physical machines, as well as executing the virtual machines, via a secure shell session. The images necessary to start the virtual machines can be found on a Network File System. This level of abstraction allows for physical machines to be added on the fly.
+
+\subsubsection{Hypervisors}
+The primary technology behind Virtualization is a hypervisor. This partitions the host machine into several simulated hardware environments, which are transparent emulations of a true machine. Examples of hypervisors include VirtualBox, VMWare, Xen, ESX and KVM.
+
+The prime distinction between types of hypervisor is the environment in which they run. Some hypervisors execute `on the metal' (aka, without an Operating System), where others execute within the Operating System environment as a standard application.
+
+\subsection{Standardization}
+One key area in which the cloud is not complete is the standards used. Whilst some standards are settled upon (for example, HTTP, REST and Xen) there is still a wide variety of key parts of cloud infrastructure which have not yet received standards. This may be due in part to the relative youth of Cloud Computing. Parts of the cloud infrastructure which still need to be standardized include virtual image formats, security and cloud federations. There are efforts to standardize parts of the Cloud landscape, including creating open source implementations of key parts.
+ 
+\subsubsection{OpenNebula}
+OpenNebula is a Virtual Infrastructure Manager which is independent of the hypervisor used. It adopts standard cloud interfaces, and has a flexible, modular architecture. 
+
+It is the VIM used in the School of Computing Cloud Testbed.
+
+\subsubsection{OpenStack}
+OpenStack is a Virtual Infrastructure Management tool which aims to become the ubiquitous open source cloud computing platform, by being simple to implement and massively scalable. It hopes to become the `Linux of Cloud Computing Systems'. 
+
+It provides a management layer which adds automation and control. It efficiently allocates resources through the system, and empowers both developers and administrators via a wide range of APIs and service portals. It also allows cloud systems to be federated together.
+
+\section{Big Data}
+In modern systems, a great deal of information is being collected and warehoused. The increase in computer usage means that there has been a massive increase in information from sources like social networks, bank transactions, advertising and analytics. Companies such as Google and Facebook are generating terabytes of data every day, and store well into the petabyte regions in total.
+
+Big data doesn't have to come from users. It can also come from sensors (like atmospheric sensors) or large scale simulations.
+
+There is a requirement to manage and analyse this data to make use of it, requiring automated analysis, visualization or summarization of vast amounts of data quickly. 
+
+\subsection{Types of Data}
+Data can take various forms. \textbf{Relational} data is typically stored in relational database management systems. It is typically stored in tables which contain entities, with relationships spanning across these entities. Relational data can be transactional, and many legacy applications store data in a relational manner. 
+
+Data can also be \textbf{unstructured}, such as text data retrieved from the web. 
+
+\textbf{Semi-Structured} data has properties from both relational and unstructured data, it will typically have some structure, but be more flexible than the strict relational model. Examples of semi-structured data would be XML or JSON. 
+
+Increasingly, \textbf{Graph} data is also becoming relevant. Graph data is typically formed from social networks (a graph representing friendships or connections), though it could come from other sources.
+
+\subsubsection{Characteristics}
+Data can also have various different characteristics. Some data is resting - there are terabytes of data which needs to be processed, but nothing is being added or removed from it. For example, if a large up front simulation is run, there will be a great deal of data to analyse, but it will not change. In this case the challenge is \textbf{volume}.
+
+Another challenge can be the \textbf{velocity} of data, as it is not always at rest. Some data streams, giving a system only seconds or milliseconds to process each piece. An example of this would be an application concerned with tweets - if the application takes all the tweets from twitter, it would have to be very quick at analysing them (as it probably only has milliseconds to process each tweet).
+
+Data can also have \textbf{variety}. Some data might be structured, but it may also be merged with unstructured data, or videos. Performing analysis on Youtube may be challenging, because some data is structured (the relationship between a person and their video contributions and comments), some is non-structured text (such as comments and descriptions), some is graph based (connections between users, potentially `likes') and some is multimedia (analysis of the video itself). 
+
+Finally, data can have varying degrees of \textbf{veracity}. It may be incomplete or inconsistent. There could be ambiguities or deception in the data, or latency could prevent the entire data from being present. There may be model approximations, rather than actual data (or alongside actual data). 
+
+\subsection{Requirements}
+There are various things which must be done with Big Data.
+
+One typical problem is searching through data, finding relevant information. This typically requires the data to be indexed. It may allow for keyword matching searches (such as hashtags in Twitter) or broader, more powerful pattern matching (such as XML or Regex).
+
+Another use for Big Data is mining it for information, using statistical models to determine key facts from the vast body of information. Data mining may be used, for example, to sell products to customers, or determine which adverts are most suitable to them. These insights would be gained from a great deal of information about the user, such as their website visits, or what products they've purchased in the past.
+
+Finally, data may be aggregated and used for the purpose of statistics. Typically this type of information can be kept in a data warehouse.
+
+\subsection{Challenges}
+Most of the requirements have been solved in the past. What makes Big Data unique is the various challenges that it provides.
+
+\subsubsection{Volume}
+The volume of data in Big Data problems is unprecedented. Existing techniques for using data (querying it, for example) may break down when utilized at this scale. Moreover, the rate of data stored in systems is increasing constantly. Facebook and Google will always have more data coming in, and the volume is therefore ever increasing.
+
+\subsubsection{Meaning}
+The data must be described in a meaningful way, which will be helpful both now and in the future. Due to the volume of the data, it cannot simply be changed later on, so metadata must be added to data in order to add semantics, which can be used later on.
+
+\subsubsection{Intelligent Searching}
+It is important to find content in a suitable period of time. Search engines should be enhanced to use the metadata of information, so that it can search the semantics of content in order to perform search operations in a reasonable time frame.
+
+\subsubsection{What to discard?}
+Wherever possible, data should be discarded. This has the net effect of making the size of the data smaller, and therefore easier to operate upon. Some data may not be relevant to an application, or might not be required again. Some data could be created whenever it is needed, rather than being stored. The cost of processing (to recreate the data) may be outweighed by the impact of storing more data.
+
+\subsubsection{Governance}
+There is the general governance issues such as quality control. 
+
+\subsection{MapReduce}
+One model for running massively scalable, distributed computations across a large amount of data is called MapReduce. The principal of MapReduce is to break a task down into lots of chunks, execute a function across all of them in parallel (map) and then reduce the resulting values down into 1 value (reduce). An example of a (very simple) map reduce job would be to take a sequence of numbers, double them (map a double function across the sequence) and then sum them (reducing them into one value).
+
+MapReduce is well suited to large data processing problems, like those typically found in Big Data. 
+
+MapReduce is an architectural pattern designed to solve concurrent problems, in a similar vein as master-slave, producer consumer or work queuing. 
+
+\subsubsection{Hadoop}
+Hadoop is a data processing framework built on the idea of MapReduce. It was initially created by Yahoo, and has been open sourced. Hadoop clusters can be provided on-demand in the cloud, which lowers the barrier to entry to solving Big Data problems, and allows companies to scale their usage depending on the amount of data they have. 
+
+\subsubsection{Concurrency}
+Concurrency is used in order to keep the system efficient. The primary advantage of MapReduce is that it can be parallelized fairly trivially (by running the map command across many machines). However, some problems can still have parallelization challenges (such as having to communicate partial solutions).
+
+The reduce step of the process is also more difficult to parallelize, as it is implied that all map stages must be completed. Sometimes, the reduce step can be divided into multiple reduce steps, which divide and conquer the process. For example, in the simple double and sum problem, results can be reduced together (summed) as soon as they have been doubled. These partial reduces allow calculation to happen asynchronously (without blocking waiting for maps to finish) and in parallel, increasing performance.
+
+The MapReduce runtime (such as Hadoop) will usually be responsible for scheduling workers to handle map jobs (and partial reduces), moving the data to the appropriate processes (distributed) and any synchronization that needs to occur. It will also handle faults, such as if a worker fails. 
+
+\subsubsection{High Level Abstraction}
+All of this provides a high level abstraction for the programmer, who no longer has to worry about the standard issues with concurrency (such as deadlocks, race conditions, debugging concurrent problems, etc) and can merely worry about specifying what computation needs to happen (rather than how it is distributed and ran concurrently). 
+
+The programmer provides 2 functions (map and reduce) which define the computation which must be performed. The execution framework (such as Hadoop) handles the rest. 
+
+Usually the programmer will also specify a method to partition the data, in order to control how it is sent to nodes. They will also provide a combine function, which acts as a mini-reduce (in memory of the map node) in order to reduce on network traffic.
+
+\subsubsection{Distributed File System}
+A Distributed File System is a way of solving the problem of moving data around the MapReduce cluster. In Big Data problems, it would take an unfeasibly long time to move all of the data to the appropriate workers. Instead of doing this, data is stored in the nodes in the first place, distributed around the cluster. When a computation is taking place, nodes merely perform the action on data that they already have stored. 
+
+For Hadoop, the underlying distributed file system is HDFS (Hadoop Distributed File System). 
+
+Google use a proprietary technology called GFS (Google File System), which relies on large amounts of commodity hardware (instead of blades, or other server equipment) which are designed to be fail-able. Each machine stores in the order of gigabytes, and performs MapReduce jobs on its contents using Google's proprietary MapReduce solution.
+\end{document}
