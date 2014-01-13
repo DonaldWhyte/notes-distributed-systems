@@ -573,55 +573,89 @@ There are various challenges associated with grid computing:
 
 
 \section{Cloud Computing}
-Cloud Computing has become a major trend in distributed systems, by offering On-Demand, Utility computing. A combination of servers, connections, software and services are made available over the Internet in a (fairly) transparent manner. This network is known as `The Cloud'. Having access to the cloud allows users to have a great amount of computing power from the most basic devices (such as mobile devices or thin clients). It also lets organizations scale their computing resources according to demand.
 
-The primary differences between the Grid and the Cloud are that the Cloud is usually centralized (having one supplier, such as Amazon) where the Grid is decentralized, and the Cloud offers On-Demand services (where this is not one of the priorities of the Grid).
+Cloud Computing has become a major trend in distributed systems, offering on-demand, utility computing. A combination of servers, connections, software and services are made available over the Internet in a \textbf{(fairly) transparent} manner. This network is known as \textbf{"the cloud"}. Having access to the cloud allows users to have a great amount of computing power from the most basic devices known as \textbf{"thin clients"}. (such as mobile devices or "dumb" terminals). It also lets organizations scale their computing resources according to demand.
 
-Technology companies are increasingly embracing the Service Orientated Economy. They are increasingly outsourcing parts of their technology stack (for example, using Salesforce) to reduce complexity and cost. This leads to the requirement of Service Orientated Infrastructure to cope with this new demand.
+The \textbf{primary differences} between the Grid and the Cloud are that the cloud is usually \textbf{centralised} (having one supplier, such as Amazon) where the Grid is decentralized. Additionally, the cloud offers on-demand services (pay for what you use), whereas this is \textit{not} one of the priorities of the Grid.
+
+Technology companies are increasingly embracing the \textbf{Service Orientated Economy}. They are increasingly outsourcing parts of their technology stack (for example, using Salesforce) to reduce complexity and cost. This leads to the requirement of Service Orientated Infrastructure to cope with this new demand. This infrastructure needs to facilitate the deployment and management of services.
 
 \subsection{Definitions}
+
 There are various definitions of Cloud Computing.
 
-It can be seen as an information technology infrastructure in which computing resources are virtualized and access as a service. Clouds are a large pool of easily usable and accessible virtualized resources. Resources can be dynamically reconfigured to adjust to a variable load (scale), allowing also for an optimum resource utilization (elasticity). This pool of resources is typically exploited by a pay-per-use model in which guarantees are offered by the infrastructure provider by means of customized Service Level Agreements.
+It can be seen as an information technology infrastructure in which computing resources are \textbf{virtualised and access as a service}. Clouds are \textbf{large pools} of easily usable and accessible virtualised resources. Resources can be \textbf{dynamically reconfigured} to adjust to a variable load (\textbf{scale}), allowing also for an optimum resource utilisation (\textbf{elasticity}). This pool of resources is typically exploited by a pay-per-use model in which guarantees are offered by the infrastructure provider by means of customized \textbf{Service Level Agreements}.
 
 \subsection{Providers}
-There are several providers of Cloud Computing. Amazon EC2 (Elastic Compute Cloud) is one such service which allows a resizable amount of computation capacity. It allows for new capacity to be obtained on demand with little friction, and reduces the amount of time taken to acquire, provision and boot servers significantly, allowing capacity to be scaled very quickly (providing true On-Demand computing). 
+
+There are several providers of Cloud Computing. Amazon EC2 (Elastic Compute Cloud) is one such service which allows a resizeable amount of computation capacity. It allows for new capacity to be obtained on demand with little friction, and reduces the amount of time taken to acquire, provision and boot servers significantly, allowing capacity to be scaled very quickly (providing true on-demand computing). 
 
 There are several alternative Cloud Computing providers such as Microsoft Windows Azure and Rackspace. 
 
-Cloud providers will typically have 10s to 100s of thousands of physical machines, usually together in data centres. This means that cloud providers are usually large companies, with existing large amounts of infrastructure. For example, Amazon had a large amount of infrastructure for running their e-commerce platform, and could use this hardware and experience of running data centres when starting their cloud business.
+Cloud providers will typically have \textbf{10s to 100s of thousands of physical machines}, usually together in data centres. This means that cloud providers are usually large companies, with existing large amounts of infrastructure. For example, Amazon had a large amount of infrastructure for running their e-commerce platform, and could use this hardware and experience of running data centres when starting their cloud business.
+
+The huge amount of computers used to run clouds means significant challenges are introduced as you have to manage multiple applications, each servive \textbf{massive numbers of clients} (e.g. millions). Additionally, managing and balancing the work load across all the computers and processing/storing the \textbf{huge amounts of data} (e.g. petabytes daily) generated by such systems.
+
+\paragraph{\textbf{NOTE: } Energy efficient is a big focus in cloud computing these days. \textbf{Cooling} is a serious problem for these data centres.
 
 \subsection{Benefits}
-Cloud computing offers numerous benefits. From a technical perspective, it allows on-demand scaling of resources in real-time to scale to increases in demand (a property sometimes referred to as elasticity). It provides hardware consolidation and platform homogeneity through virtualization, which helps to avoid problems with lock-in. Virtualization also affords simpler hardware provisioning. Finally, it has the benefit of transparent resource management, in terms of fault-tolerance and other automation.
 
-From an economic perspective, it means businesses do not need to set up their own infrastructure - reducing capital expenditure and therefore lowering the barrier to entry in many industries. This also takes the burden of maintenance away from the individual business, and gives it to the cloud service provider, decreasing the cost of maintenance. 
+Cloud computing offers numerous benefits. From a technical perspective, it allows on-demand scaling of resources in real-time to scale to increases in demand (a property sometimes referred to as \textbf{elasticity}). It provides hardware consolidation and platform homogeneity through virtualisation, which helps to avoid problems with vendor lock-in. Virtualisation also affords simpler hardware provisioning. Finally, it has the benefit of \textbf{transparent resource management}, in terms of fault-tolerance and other automation.
+
+From an economic perspective, it means businesses do not need to set up their own infrastructure, reducing capital expenditure and therefore \textbf{lowering the barrier} to entry in many industries. This also takes the burden of maintenance (e.g. reduced power and cooling costs) away from the individual business and gives it to the cloud service provider, \textbf{decreasing the overall cost of maintenance} as it is consolidated in one place (cloud provider).
 
 \subsubsection{Use Cases}
+
 There are various use cases for Cloud Computing. A cloud can be used to provide a user with a service, or to allow a business to provide a service to the user. Clouds can be used to share infrastructure or applications between businesses (for example, a supply chain), or private clouds can be used within an enterprises premises. A hybrid solution, using many private and public clouds could be used to combine resources of lots of cloud providers together, or to ally external cloud functionality with a private cloud.
 
+What do cloud service consumers what? They want to \textbf{minimise expenses and meet quality of service agreements}. They may ask the following questions;
+\begin{itemize}
+	\item how do express QoS requirements to meet my goals? (computation/storage requirements)
+	\item how do I assign valuation to my application?
+	\item how do I discover services and map applications to meet QoS needs? (e.g. are they in a registry?)
+	\item how do I manage multiple providers and get my work done?
+\end{itemize}
+
+What do cloud service providers want? They want to \textbf{maximise profit and attract customers}. They may ask the following questions;
+\begin{itemize}
+	\item how do I decide service pricing models?
+	\item how do I specify prices?
+	\item how do I translate prices into resource allocations?
+	\item how do I assign and enforce resource allocations?
+	\item how do I advertise and attract consumers?
+	\item how do I perform accounting?
+\end{itemize}
+
 \subsection{Taxonomy}
-There are 3 main types of service layer within a cloud. Any of these 3 service layers can be exposed to the client, and lower layers in the taxonomy are hidden from them.
+
+There are three main types of service layers within a cloud. Any of these 3 service layers can be exposed to the client, and \textbf{lower layers} of the exposed layer are hidden from them.
 
 \subsubsection{Software as a Service}
-Software as a Service (SaaS) is an alternative to applications which are traditionally run locally. Users may pay a monthly fee, or for how much resources they use. Examples of Software as a Service would be Salesforce, or Google Docs.
+
+\textbf{Software as a Service (SaaS)} is an alternative to applications which are traditionally run locally. Users may pay a monthly fee, or for how much resources they use. Examples of Software as a Service would be Salesforce, or Google Docs.
 
 \subsubsection{Platform as a Service}
-Platform as a Service (PaaS) is a software stack which facilitates deployment of applications. For example, a web application could be hosted on a cloud provided web server. This removes the responsibility from the client to configure web servers (or other similar software) in a secure manner.
+
+\textbf{Platform as a Service (PaaS)} is a software stack which facilitates \textbf{deployment of applications}. For example, a web application could be hosted on a cloud provided web server. This removes the responsibility from the client to configure web servers (or other similar software) in a secure manner.
 
 \subsubsection{Infrastructure as a Service}
-Infrastructure as a Service (IaaS) is the lowest level in the taxonomy. In IaaS the customer gets access to the virtual machine, and can install their own Operating System and associated software on it. It requires the greatest amount of set up and configuration, but gives the user the associated flexibility. In IaaS the core principals of elasticity still apply, and customers benefit from the networking, physical hardware and other Infrastructure resources that the cloud service provider has built up. 
 
-\subsection{Typical Architecture}
-A typical cloud architecture will have the System level consisting of lots of commodity computing resources (such as servers). 
+\textbf{Infrastructure as a Service (IaaS)} is the lowest level in the taxonomy. In IaaS the customer gets access to the virtual machine, and can install their own Operating System and associated software on it. It requires the greatest amount of set up and configuration, but gives the user a greater amount of flexibility. In IaaS the core principals of \textbf{elasticity} still apply, and customers benefit from the networking, physical hardware and other infrastructure resources that the cloud service provider has built up. 
 
-A layer of core middleware will sit above, providing Virtualization (for virtual machines and VM management), and various business functions (Quality of Service, Pricing, metering, SLA Management, Accounting, Billing, etc). 
+\subsection{Typical Cloud Architecture}
 
-Above this will be the cloud programming environments and tool, possibly connected to an Application Hosting Platform. This consists of various libraries, workflows and tools which allow applications to be developed for the cloud. 
+TODO: in-place figure of (layered) cloud
 
-Finally, there is the users cloud application. 
+A typical \textbf{cloud architecture} has four main layers, which from the bottom layer to the top are:
+\begin{itemize}
+	\item \textbf{System Layer} -- consists of lots of commodity resources, such as computing power, storage and network connections.
+	\item \textbf{Core Middleware} -- provides virtualisation (for virtual machines and VM management) and various business functions (Quality of Service, Pricing, metering, SLA Management, Accounting, Billing, etc).
+	\item \textbf{application development} -- this contains the cloud programming environments and tool, possibly connected to an Application Hosting Platform. This consists of various libraries, workflows and tools which allow applications to be developed for the cloud. 
+	\item \textbf{User Application Layer} -- contains the user's developed applications which are currently being deployed and accessed to users
 
-\subsection{Virtualization}
-Virtualization is a key technique in Cloud Computing, as it allows multiple services to be run on one server in isolation, including isolation of platforms like Windows or Linux (allowing them to co-exist simultaneously on the same physical machine) reduces complexity, and allows for the consolidation of servers (reducing cost). It also allows for quick configuration and administration of servers, as they can be run from a preprepared virtualized image, mounted to a virtual server, rather than having to be created from scratch and installed on physical hardware. Finally, it creates a simplified, sandboxed environment from which pay-per-usage business models can be set up with reasonable simplicity. 
+
+\subsection{Virtualisation}
+Virtualisation is a key technique in Cloud Computing, as it allows multiple services to be run on one server in isolation, including isolation of platforms like Windows or Linux (allowing them to co-exist simultaneously on the same physical machine) reduces complexity, and allows for the consolidation of servers (reducing cost). It also allows for quick configuration and administration of servers, as they can be run from a preprepared virtualised image, mounted to a virtual server, rather than having to be created from scratch and installed on physical hardware. Finally, it creates a simplified, sandboxed environment from which pay-per-usage business models can be set up with reasonable simplicity. 
 
 There are 4 types of virtualization.
 
