@@ -884,4 +884,72 @@ NTP is the time-equivalent of NDS. It is a highly robust service, which has been
 
 TODO: NTP diagram: Caption: Accurate decreases as we move down the strata
 
+
+\section{Current Trends}
+
+Over time, several trends have emerged in distributed systems. These are often driven by enterprises, which seeks to integrate disparate systems together (to provide business value), manage ever-complex IT systems (databases, Operating Systems, networks, storage, new application development) and to plan for new vendor techniques and technologies.
+
+\subsection{On-Demand Computing}
+
+On-Demand computing is becoming a popular model in response to the challenges of enterprise IT. Computer resources are acquired and used on an \textbf{on-demand basis}. When computer resources are needed, they are utilized and when they are not they are discarded. 
+
+If an enterprise plans for its \textbf{peak requirements}, they may end up paying a large amount for computer resources that they don't need the majority of the time. However, if they only purchase the minimum resources, they will face problems when they reach the peak of their utilization (as they will have inefficient resources to deal with the work load). For example, an online shop might use several times the amount of computing resources around Christmas time. They don't need that level of resources any other time in the year, so purchasing that amount of infrastructure would be a waste of money for the rest of the year. However, without those resources they cannot capitalize on the Christmas rush. The flexibility of \textbf{On-Demand Computing} is crucial in meeting these fluctuations in demand.
+
+\subsection{Utility Computing}
+
+The concept behind utility computing is to provide a service whereby organizations \textbf{outsource} their demand for computer resources to other companies, who act as external service providers. The resources that they use from the external service providers are paid for on a \textbf{per-usage basis}. Customers access their computing resources over a network (typically the Internet, but it could be a private network) and pay for the length of computing time that they use. 
+
+This is analogous to other common utilities, such as gas or electricity. Electricity, for example, is acquired from power companies (service providers) and sent through the power grid (similar to the Internet). The customer pays for how much electricity they use (as opposed to a one off, or constant cost payment) and can scale their usage of power up and down as required (for example, more in winter but less when they're on holiday abroad).
+
+\section{Grid Computing}
+ 
+\textbf{Grid Computing} is a type of utility computing. Grids are typically geographically diverse networks consisting of a (potentially) large number of \textbf{commodity computing resources}, connected together to provide unlimited storage and computing capacity. The Grid aims to facilitate the sharing of \textbf{everything} (where the Web aims to facilitate the sharing of information). 
+
+The main problem that Grids attempt to solve is the sharing of computer resources between dynamic collections of individuals, organizations and institutions. These communities (or \textbf{virtual organizations}) can share computing resources as they pursue common goals. An example of this is the \textbf{White Rose Grid}, which the University of Leeds, University of York and University of Sheffield often use to collaborate on shared projects.
+
+TODO: figure of power grid and grid with caption saying how it's analogous to electricity
+
+The concept of a grid has transformed research, business, medicine and engineering. According to Ian Foster, there are \textbf{three major requirements for a grid system}:
+\begin{itemize}
+    \item \textbf{Co-ordination of resources that are beyond central control} -- so there is no single entity saying "I'm controlling the grid.". This involves authentication, authorization, accounting (auditing) and distributed algorithms.
+    \item \textbf{Standard, Open, General-purpose protocols and interfaces} -- reuse as much as you can/ This relies on standard and open protocols for all machines to communicate easily (makes adding new machines to grid and \textbf{scaling} it more easier)
+    \item \textbf{Non-Trivial Quality of Service}--  including the guaranteed ability of remote access, resource management, fault management (and tolerance), guarantees of performance and monitoring.
+\end{itemize}
+
+TODO: figure showing grid metaphor diagram
+
+\subsection{Layered Grid Architecture}
+
+Figure \ref{fig:layered-grid-architecture} shows the \textbf{layered} architecture of the grid; this is analogous to the Internet architecture 5 or 7 layer). The layers are as follows:
+\begin{itemize}
+	\item \textbf{Application} -- Where the applications that run on the grid reise
+	\item \textbf{Collection} -- coordinates multiple resources, infrastructure services. Includes co-allocation, scheduling and directory services monitoring.
+	\item \textbf{Resource} -- Sharing single resources, negotiating access of said resources and controlling their use. Includes configuration, current load on resource and usage policy (is host $x$ allowed to use service $y$ this much or on this date?)
+	\item \textbf{Connectivity} -- about "talking to things". Deals with communication and security through Internet protocols, single sign-on and trust relationships. This encapsulates the \textbf{Transport and IP layers} of the Internet layered architecture
+	\item \textbf{Fabric} -- about controlling things locally. Controls access to, and control of, \textbf{computational and storage resources}, catalogues and networks
+\end{itemize}
+
+TODO: layered grid figure
+
+\subsection{Open Grid Services Architecture}
+
+The \textbf{Open Grid Services Architecture (or OGSA)} is motivated by the need to integrate \textbf{services} (not just computing power) across distributed virtual organizations, all with different platforms and technologies (heterogeneous). It is designed to focus on the nature of the services in the grid, that respond to particular messages. In other words, it is a way of seeing the grid as a \textbf{extensible set of services}.
+
+This vision can be combined with web services to inherit many of their advantages, such as service description and discovery. Pretty much \textbf{everything} becomes a service. However, grid services (and web services in general) tend to provide clients with the ability to view and modify the state of entities (resources). Whilst services are usually designed in this manner (despite the stateless nature of HTTP), there is no \textbf{explicit} interface indicating that the service is \textbf{stateful}. In other words, web services are stateless unless explicitly stated -- but how does a grid know this? See Figures \ref{fig:stateless-web-invocation} and \ref{fig:stateless-web-invocation} for an illustrating of stateless web services and the stateful equivalent.
+
+TODO: stateless and stateful figures
+
+The \textbf{Web Service Resource Framework (WSRF)} is designed to solve this issue. WSRF is a set of 5 technical specifications, defined in terms of message exchanges and XML definitions. It allows web service resources to be declared, created, accessed, monitored or observed for change, and destroyed via conventional web service mechanisms.  WSRF acts as an \textbf{extension} of \textit{conventional} web services. OGSA \textbf{requires} WSRF to be in place.
+
+\subsection{Technical Challenges}
+
+There are various challenges associated with grid computing:
+\begin{itemize}
+	\item \textbf{Security and Trust} is a persistent problem, as there is no central control over a grid, due to the fact it spans across \textbf{multiple} administrative domains, and possibly across nationalities (all parties and machines should trust each other).
+	\item \textbf{Resource Stability} is also an issue, as the characteristics of resources can change over time and location. That is, resources/services enter the grid and then leave again.
+	\item \textbf{Complex Distributed Applications} are a natural fit for the grid, and come with complex requirements for resource allocation and complicated work-flows.
+	\item \textbf{Guaranteed performance} in a situation which is always changing, with heterogeneous platforms. Each machine may have different middleware, different specifications and so on -- this should not matter! This also means the grid must also be fault tolerant and handle broken down machines.
+	\item \textbf{Virtualisation} of resources.
+\end{itemize}
+
 \end{document}
