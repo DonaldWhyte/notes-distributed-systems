@@ -474,15 +474,26 @@ Functionality for JNDI is implemented in \textit{javax.naming} (especially in th
 Both flat and hierarchical contexts are supported (for example, the flat RMI registry and a file system), as is LDAP.
 
 \section{Timing and Synchronization}
-One of the major problems of distributed computing is that there is no centralized, globally agreed upon time. Where in a centralized system, the current time is unambiguous (not necessarily correct, but consistent) this assumption does not hold in a distributed environment. 
+
+One of the major problems of distributed computing is that there is no centralized, globally agreed upon time. Where in a centralized system, the current time is unambiguous (not necessarily correct, but consistent), this assumption \textbf{does not hold} in a distributed environment. There is \textbf{no global agreement} on time.
 
 \subsection{Time Standards}
+
 The current standard for time was defined in 1958 as the time it takes for caesium 133 atom to make 9,192,630,770 electronic transitions (prior to 1958 and the invention of the atomic clock, mean solar seconds were used). 50 laboratories around the world measure the number of atomic clock ticks since the 1st of January 1958, and this is averaged to produce the International Atomic Time. As the mean solar day is getting longer, leap seconds are introduced to recalibrate the time (so noon does not get earlier). This occurs whenever there is a discrepancy of 800 ms between atomic and solar time.
 
-The time based on TAI (atomic time) and including leap seconds is called Universal Coordinated Time (UTC). UTC synchronization is performed via satellite or radio transmission.
+The time based on TAI (atomic time) and including leap seconds is called \textbf{Universal Coordinated Time (UTC)}. UTC synchronization is performed via satellite or radio transmission.
 
 \subsection{Drift}
-Every machine has an internal physical clock, which uses a quartz crystal to measure the time. Each crystal oscillation decrements a counter, and when it hits 0 a timer interrupt (a clock tick) is generated, and the counter is reloaded. Battery powered RAM stores the number of clock ticks since a known point (an epoch), so the system can determine the date and time. However, crystals will run at different rates, causing clock skew between different machines.
+
+Every machine has an internal physical clock, which uses a quartz crystal to measure the time. Each crystal oscillation decrements a counter, and when it hits 0 a timer interrupt (a clock tick) is generated, and the counter is reloaded. Battery powered RAM stores the number of clock ticks since a known point (an \textbf{epoch}), so the system can determine the date and time. However, crystals will run at different rates, causing clock skew between different machines.
+
+At UTC time $t$, the value of the $i$th clock in the system is $C_i{t}$. Ideally, $C_i(t)) = t + \gamma$ for all $i$ and $t$, and $\frac{\delta C}{\delta t} = 1$. In other words, the \textbf{drift} of every clock in the system is the \textbf{same}, and the clock's value is changing at the same rate (and at the same time) as the actual time $t$.
+
+If we set a \textbf{maximum allowed drift rate} $p$, we consider a time as \textbf{working properly} if:
+\begin{equation}
+	1 - p \leq \frac{\delta C}{\delta t} \leq 1 + p
+\end{equation}
+where $0 \leq p \leq 1$.
 
 Ideally, at a UTC time of $t$ with the value of a clock $C$, $dC/dt=1$ (i.e. the clock should tick). This may not be the case due to clock drift. When a clock has drifted past a maximum drift rate, it is determined to not be working correctly. Currently, clocks are generally accurate to within $10^{-5}$. By having a maximum drift rate ($p$), 2 clocks within a distributed system can be guaranteed to be within $2p \theta t$ at time $\theta t$. This occurs because both clocks may be drifting away from UTC at a maximum of $p$, but in opposite directions (one moving fast, one moving slowly).
 

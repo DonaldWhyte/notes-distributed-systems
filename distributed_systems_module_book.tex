@@ -18,6 +18,7 @@
 % For graphic files
 \usepackage{graphicx}
 \usepackage{epstopdf}
+\usepackage{amsmath}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
 % Set the Phytitle, author, and date.
@@ -790,7 +791,7 @@ A \textbf{discovery service} addresses all of these problems. Developers \textbf
 
 \textbf{UDDI (Universal Discovery, Description and Integration)} is a solution to the problem of finding web services. It is a discovery service which provides WSDL data for web services in response to requests from clients. It allows clients to find web services which implement certain functionality, and are compatible with them. 
 
-The service provider creates a UDDI \textbf{business registration} (which is XML) and publishes it. These business registrations are stored in a UDDI Business Registry, which is \textbf{replicated} throughout UDDI Operator Sites. The registry itself is a web service, so it can be communicated with using SOAP over HTTP. Relevant messages can be constructed or parsed by calls to an \textbf{inquiry API} and a \textbd{publishing API}. There are several implementations of UDDI, including for .NET (UDDI.NET) and Java (jUDDI). 
+The service provider creates a UDDI \textbf{business registration} (which is XML) and publishes it. These business registrations are stored in a UDDI Business Registry, which is \textbf{replicated} throughout UDDI Operator Sites. The registry itself is a web service, so it can be communicated with using SOAP over HTTP. Relevant messages can be constructed or parsed by calls to an \textbf{inquiry API} and a \textbf{publishing API}. There are several implementations of UDDI, including for .NET (UDDI.NET) and Java (jUDDI). 
 
 \subsubsection{Spontaneous Networking Environments}
 
@@ -809,5 +810,78 @@ The API provides:
 Examples of frameworks that use JNDI is the RMI registry (flat) and the file system (hierarchical).
 
 Functionality for JNDI is implemented in \textit{javax.naming} (especially in the \textit{Context} interface and \textit{InitialContext} class). The starting location for a lookup is the \textit{InitialContext} class, which has a \textit{lookup} method allowing for objects (including sub-contexts) to be looked up by name. An object can be added to a context by the \textit{bind} method. LDAP also uses the JNDI API.
+
+\section{Timing and Synchronization}
+
+One of the major problems of distributed computing is that there is no centralized, globally agreed upon time. Where in a centralized system, the current time is unambiguous (not necessarily correct, but consistent), this assumption \textbf{does not hold} in a distributed environment. There is \textbf{no global agreement} on time.
+
+\subsection{Time Standards}
+
+The current standard for time was defined in 1958 as the time it takes for caesium 133 atom to make 9,192,630,770 electronic transitions (prior to 1958 and the invention of the atomic clock, mean solar seconds were used). 50 laboratories around the world measure the number of atomic clock ticks since the 1st of January 1958, and this is averaged to produce the International Atomic Time. As the mean solar day is getting longer, leap seconds are introduced to recalibrate the time (so noon does not get earlier). This occurs whenever there is a discrepancy of 800 ms between atomic and solar time.
+
+The time based on TAI (atomic time) and including leap seconds is called \textbf{Universal Coordinated Time (UTC)}. UTC synchronization is performed via satellite or radio transmission.
+
+\subsection{Drift}
+
+Every machine has an internal physical clock, which uses a quartz crystal to measure the time. Each crystal oscillation decrements a counter, and when it hits 0 a timer interrupt (a clock tick) is generated, and the counter is reloaded. Battery powered RAM stores the number of clock ticks since a known point (an \textbf{epoch}), so the system can determine the date and time. However, crystals will run at different rates, causing clock skew between different machines.
+
+At UTC time $t$, the value of the $i$th clock in the system is $C_i{t}$. Ideally, $C_i(t)) = t + \gamma$ for all $i$ and $t$, and $\frac{\Delta C}{\Delta t} = 1$. In other words, the \textbf{drift} of every clock in the system is the \textbf{same}, and the clock's value is changing at the same rate (and at the same time) as the actual time $t$ (a clock should tick when a second actually goes by).
+
+\begin{equation}
+\begin{aligned}[b]
+	\frac{\Delta C}{\Delta t} > 1
+	\;\;\;\;\;\; \text{fast clock} \\
+	\frac{\Delta C}{\Delta t} < 1
+	\;\;\;\;\;\; \text{slow clock} \\
+	\frac{\Delta C}{\Delta t} = 1
+	\;\;\;\;\;\; \text{perfect clock} \\
+\end{aligned}
+\end{equation}
+
+If we set a \textbf{maximum allowed drift rate} $p$, we consider a time as \textbf{working properly} if:
+\begin{equation}
+	1 - p \leq \frac{\Delta C}{\Delta t} \leq 1 + p
+\end{equation}
+where $0 \leq p \leq 1$. Currently, clocks are generally accurate to within $10^{-5}$ of the actual time, so $p = 10^{5}$ would be a good maximum drift rate.
+
+By imposing a maximum drift rate $p$, two clocks may as far as $2p\Delta t$ apart. This occurs because both clocks may be drifting away from UTC at a maximum of $p$, but in \textbf{opposite directions} (one moving fast, one moving slow). This is
+
+TODO: drift as function of UTC figure
+
+By having a maximum drift rate ($p$), 2 clocks within a distributed system can be guaranteed to be within $2p \theta t$ at time $T$. This occurs because both clocks may be drifting away from UTC at a maximum of $p$, but in opposite directions (one moving fast, one moving slowly). This is shown in Figure \ref{fig:drift-utc}.
+
+\subsection{Christian's Algorithm}
+
+\textbf{Christian's algorithm} presents a way to solve timing and synchronization issues by using a \textbf{centralized UTC server}. A machine with a UTC receiver is deemed the \textbf{time server}. Every machine sends a message periodically (interval between messages not exceeding $\frac{\Delta}{2p}$ seconds) to the time server, requesting the current canonical time. The server responds as quickly as possible with the current time according to UTC $C_{UTC}$. 
+
+This introduces two major problems. The first is clocks that may be running quick. If they adjust to use the canonical time immediately, it would appear to applications as though the system has \textbf{gone back in time}. This may cause issues, such as resources being deleted before being created in audit trails. In order to deal with this, a fast client must adjust its time to $C_{UTC}$ \textbf{gradually}. This problem does not affect slow clients, as they can merely "skip" a few seconds. 
+
+The second major issue is \textbf{network latency}. The message containing the current UTC time will never arrive instantaneously, and will therefore be incorrect when it arrives at the client. It will be more incorrect the bigger the network latency. One method of estimating the amount of time it has taken for the message to arrive is to measure the \textbf{time between request and response and to divide it by 2}, to approximate the cost of the message going in one direction. You would then subtract this computed time from the received time. Figure \ref{fig:propagation-time} illustrates the network latency. We can take this into account and compute the \textbf{time of clock $i$} like so:
+
+\begin{equation}
+	C_i(t) = C_{UTC} - \frac{t_1 - t_0 - I}{2}
+\end{equation}
+
+TODO: propagation time figure
+
+\subsection{Berkeley Algorithm}
+
+In the \textbf{Berkeley algorithm}, there is a \textbf{time daemon} which asks all of the machines in the system what the time is according to their internal clocks. All of the machines in the system answer, and the time daemon informs all of its clients how to adjust their clocks. This is a useful technique for when a UTC reference point is not present. The Berkeley algorithm will simply \textbf{average the clocks} of the clients to determine the correct canonical time within the system.
+
+It is used to \textbf{minimise time differences} when there is no central UTC receiver to work from.
+
+TODO: berkeley algortithmm
+
+Figure \ref{fig:time-nerkeley} shows an example of the Berkeley algorithm running on a DS. The time daemon computes the average of all three times (including the \textbf{time daemons}) and then sets every clock in the system to that average (this again includes the time daemon!)
+
+\subsection{Network Time Protocol}
+
+In order to send timing information over the Internet, \textbf{NTP (Network Time Protocol} is used. Christian's and Berkley Algorithms are not suitable to the Internet, as they require either a centralized daemon or time server. It provides a reliable service which can survive losses of connectivity, and provides an authentication layer to prevent interference with the service (malicious or otherwise). Clients can resynchronize frequently enough to offset common drift rates.
+
+In order to maintain scale, NTP forms a logical hierarchy called a \textbf{synchronization subnet}. Primary servers, those in \textbf{stratum 1}, are connected directly to the time source (the UTC reference point). Secondary servers synchronize with those in stratum 1, and so forth. Leaf nodes are individual users workstations. The accuracy of the time decreases proportionally to the layer of the strata (the bottom layer having the least accurate time). 
+
+NTP is the time-equivalent of NDS. It is a highly robust service, which has been widely deployed throughout the Internet for a number of years. It is generally recognized as the best in class solution for unreliable networks, providing accurate timing information to within a few milliseconds over the Internet, or within sub-milliseconds on local networks.
+
+TODO: NTP diagram: Caption: Accurate decreases as we move down the strata
 
 \end{document}
