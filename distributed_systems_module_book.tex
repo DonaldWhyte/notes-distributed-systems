@@ -185,7 +185,15 @@ The object-orientated programming paradigm dominates modern software engineering
 Interprocess communication is at the heart of all distributed systems. It describes the mechanisms/protocols used by machines to communicate with each other. \textbf{Low level message passing} on the underlying network is used to implement communication in a distributed system.
 
 The OSI model is a seven-layer architecture which is used to implement Internet communication. The seven layers are:
-TODO
+\begin{itemize}
+	\item \textbf{Application} -- This layer directly communicates with the user's application software.
+	\item \textbf{Presentation} -– Serves as a bridge between the application and session layer, translating data from the Application layer so it's usable in the Session layer.
+	\item \textbf{Session} -– Controls connections between computers, managing the connection between local and remote applications.
+	\item \textbf{Transport} -– Provides transparent transfer of data between users of the system.
+	\item \textbf{Network} -– Provides the means to actually transfer the data through the network.
+	\item \textbf{Data Link} -– Can transfer data between network entities and detect errors in Physical layer.
+	\item \textbf{Physical} -– This is the actual physical hardware the network uses: wires, wireless receivers, routers, computers and so on.
+\end{itemize}
 
 TODO: in-place figure layered protocol of OSI
 
@@ -1203,7 +1211,7 @@ The MapReduce \textbf{runtime} (such as Hadoop) will usually be responsible for 
 
 A \textbf{Distributed File System} is a way of solving the problem of \textbf{moving} data around the MapReduce cluster. In Big Data problems, it would take an unfeasibly long time to move all of the data to the appropriate workers. Instead of doing this, data is stored in the \textbf{nodes which will process said data} to begin with. When a computation is taking place, nodes merely perform the action on data that they \textbf{already have stored}. This is known as:
 \begin{quote}
-	\texitt{"moving the processes to the data"}
+	\textit{"moving the processes to the data"}
 \end{quote} 
 
 For Hadoop, the underlying distributed file system is HDFS (Hadoop Distributed File System). 
