@@ -967,6 +967,24 @@ There are various definitions of Cloud Computing.
 
 It can be seen as an information technology infrastructure in which computing resources are \textbf{virtualised and access as a service}. Clouds are \textbf{large pools} of easily usable and accessible virtualised resources. Resources can be \textbf{dynamically reconfigured} to adjust to a variable load (\textbf{scale}), allowing also for an optimum resource utilisation (\textbf{elasticity}). This pool of resources is typically exploited by a pay-per-use model in which guarantees are offered by the infrastructure provider by means of customized \textbf{Service Level Agreements}.
 
+What do cloud service consumers what? They want to \textbf{minimise expenses and meet quality of service agreements}. They may ask the following questions;
+\begin{itemize}
+	\item how do express QoS requirements to meet my goals? (computation/storage requirements)
+	\item how do I assign valuation to my application?
+	\item how do I discover services and map applications to meet QoS needs? (e.g. are they in a registry?)
+	\item how do I manage multiple providers and get my work done?
+\end{itemize}
+
+What do cloud service providers want? They want to \textbf{maximise profit and attract customers}. They may ask the following questions;
+\begin{itemize}
+	\item how do I decide service pricing models?
+	\item how do I specify prices?
+	\item how do I translate prices into resource allocations?
+	\item how do I assign and enforce resource allocations?
+	\item how do I advertise and attract consumers?
+	\item how do I perform accounting?
+\end{itemize}
+
 \subsection{Providers}
 
 There are several providers of Cloud Computing. Amazon EC2 (Elastic Compute Cloud) is one such service which allows a resizeable amount of computation capacity. It allows for new capacity to be obtained on demand with little friction, and reduces the amount of time taken to acquire, provision and boot servers significantly, allowing capacity to be scaled very quickly (providing true on-demand computing). 
@@ -987,25 +1005,17 @@ From an economic perspective, it means businesses do not need to set up their ow
 
 \subsubsection{Use Cases}
 
-There are various use cases for Cloud Computing. A cloud can be used to provide a user with a service, or to allow a business to provide a service to the user. Clouds can be used to share infrastructure or applications between businesses (for example, a supply chain), or private clouds can be used within an enterprises premises. A hybrid solution, using many private and public clouds could be used to combine resources of lots of cloud providers together, or to ally external cloud functionality with a private cloud.
+There are various use cases for cloud computing:
+\begin{enumerate}
+	\item end users could access applications running on a public cloud, or from a \textit{different perspective}, an enterprise is using the cloud to delkiuver data and services to the end user
+	\item an enterprise could be using a public cloud for its internal processes
+	\item two enterprises are using the same public cloud so they can interoperate and achieve common goals (e.g. a supply chain - manufactoers, designers, stores, etc.)
+	\item the cloud is contained \textbf{within the enterprise}, which is a \textbf{private cloud}
+	\item \textbf{hybrid clouds} that combine public and private clouds together to be perform a goal. 
+\end{enumerate}
+Figure \ref{fig:cloud-use-cases} illustrates these use cases. The numbers by each diagram show which use case it corresponds to.
 
-What do cloud service consumers what? They want to \textbf{minimise expenses and meet quality of service agreements}. They may ask the following questions;
-\begin{itemize}
-	\item how do express QoS requirements to meet my goals? (computation/storage requirements)
-	\item how do I assign valuation to my application?
-	\item how do I discover services and map applications to meet QoS needs? (e.g. are they in a registry?)
-	\item how do I manage multiple providers and get my work done?
-\end{itemize}
-
-What do cloud service providers want? They want to \textbf{maximise profit and attract customers}. They may ask the following questions;
-\begin{itemize}
-	\item how do I decide service pricing models?
-	\item how do I specify prices?
-	\item how do I translate prices into resource allocations?
-	\item how do I assign and enforce resource allocations?
-	\item how do I advertise and attract consumers?
-	\item how do I perform accounting?
-\end{itemize}
+\paragraph{\textbf{NOTE: }} A cloud broker could deliver hybrid clouds to users, without the users actually knowing the clouds using underneath . The broker acts as middleman that gets the most optimal resources for the user!
 
 \subsection{Taxonomy}
 
@@ -1034,7 +1044,6 @@ A typical \textbf{cloud architecture} has four main layers, which from the botto
 	\item \textbf{Application Development Layer} -- this contains the cloud programming environments and tool, possibly connected to an Application Hosting Platform. This consists of various libraries, workflows and tools which allow applications to be developed for the cloud. 
 	\item \textbf{User Application Layer} -- contains the user's developed applications which are currently being deployed and accessed to users
 \end{itemize}
-
 
 \subsection{Virtualisation}
 
@@ -1066,6 +1075,8 @@ The primary technology behind virtualization is a \textbf{hypervisor}. This part
 
 The prime distinction between types of hypervisor is the environment in which they run. Some hypervisors execute "on the metal" (aka, without an operating system), whereas others execute \textbf{within} the operating system as a standard application.
 
+TODO: in-place figure of hysical infrastructure
+
 \subsection{Standardization}
 
 One key area in which the cloud is not complete is the \textbf{standards} used. Whilst some standards are settled upon (for example, HTTP, REST and Xen) there is still a wide variety of key parts of cloud infrastructure which have not yet received standards.
@@ -1083,5 +1094,120 @@ It is the VIM used in the School of Computing Cloud Testbed.
 OpenStack is a Virtual Infrastructure Management tool which aims to become the \textbf{ubiquitous open source cloud computing platform}, by being simple to implement and massively scalable. It hopes to become the "Linux of Cloud Computing Systems". 
 
 It provides a \textbf{management layer} which adds automation and control. It efficiently allocates resources through the system, and empowers both developers and administrators via a wide range of APIs and service portals. It also allows cloud systems to be \textbf{federated} together. In other words, it allows separate clouds from different organisations to combine into a \textbf{cloud federation}.
+
+
+
+\section{Big Data}
+
+In modern systems, a great deal of information is being collected and warehoused. The increase in computer usage means that there has been a massive increase in information from sources like social networks, bank transactions, advertising and analytics. Companies such as Google and Facebook are generating terabytes of data every day, and store well into the petabyte regions in total.
+
+Big data doesn't \textit{have} to come from users. It can also come from sensors (like atmospheric sensors for weather ) or large scale simulations.
+
+There is a need to \textbf{manage and analyse}this data to make use of it, requiring automated analysis, visualization or summarisation of vast amounts of data quickly. 
+
+\subsection{Types of Data}
+
+Data can take various forms. \textbf{Relational} data is typically stored in relational database management systems. This means it is stored in tables that contain entities, with relationships spanning across these entities. Relational data can be transactional, and many legacy applications store data in a relational manner. 
+
+Data can also be \textbf{unstructured}, such as text data retrieved from the web or audio/video recordings.
+
+\textbf{Semi-Structured} data has properties from both relational and unstructured data, it will typically have some structure, but be more flexible than the strict relational model. Examples of semi-structured data would be XML or JSON. 
+
+Increasingly, \textbf{graph} data is also becoming relevant. Graph data is typically formed from social networks (a graph representing friendships or connections), links between documents on the web and so on.
+
+Additionally, you also have large quantities of \textbf{streaming data} which is never stored, so you can only scan it once. This is a field known as \textbf{streaming analytics}. 
+
+\subsubsection{Characteristics}
+
+Data can also have various different characteristics. Some data is resting -- there are terabytes of data which needs to be processed, but nothing is being \textbf{added or removed} from it. For example, if a large up front simulation is run, there will be a great deal of data to analyse, but it will not change. In this case the challenge is \textbf{volume}.
+
+Another challenge can be the \textbf{velocity} of data, as it is not always at rest. Some data streams give a system only seconds or milliseconds to process each piece. An example of this would be an application concerned with tweets. If the application takes all the tweets from twitter, it would have to be \textbf{very quick at analysing them} (as it probably only has milliseconds to process each tweet).
+
+Data can also have \textbf{variety}. Some data might be structured, but it may also be merged with unstructured data, or videos. Performing analysis on YouTube may be challenging, because some data is structured (the relationship between a person and their video contributions and comments), some is non-structured text (such as comments and descriptions), some is \textbf{graph based} (connections between users, potentially "likes") and some is multimedia (analysis of the video itself). 
+
+Finally, data can have varying degrees of \textbf{veracity}. It may be incomplete or inconsistent. There could be ambiguities or deception (incorrectly computed values) in the data, or latency could prevent the entire data from being present. Furthermore, the data may be \textbf{out-of-date and not timely}. There may be model approximations, rather than actual data (or alongside actual data). 
+
+\subsection{Requirements}
+
+There are various things which must be done with Big Data.
+
+One typical problem is \textbf{searching} through data, finding relevant information. This typically requires the data to be indexed. It may allow for keyword matching searches (such as hashtags in Twitter) or broader, more powerful pattern matching (such as XML or Regex).
+
+Another use for Big Data is mining it for information, using \textbf{statistical models to determine key facts} from the vast body of information. \textbf{Data mining} may be used, for example, to sell products to customers, or determine which adverts are most suitable to them. These insights would be gained from a great deal of information about the user, such as their website visits, or what products they've purchased in the past.
+
+Finally, data may be aggregated and used for the purpose of statistics. Typically this type of information can be kept in a \textbf{data warehouse}.
+
+\subsection{Challenges}
+
+Most of the requirements have been solved in the past. What makes Big Data unique is the various challenges that it provides:
+\begin{itemize}
+	\item \textbf{Volume} -- The volume of data in Big Data problems is unprecedented. Existing techniques for using data (querying it, for example) may break down when utilized at this scale. Moreover, the rate of data stored in systems is increasing constantly. Facebook and Google will always have more data coming in, and the volume is therefore ever increasing. Example of a system to deal with storing Big Data is the \textbf{Google File System}.
+	\item \textbf{Meaning} -- The data must be described in a meaningful way, which will be helpful both now and in the future. Due to the volume of the data, it cannot simply be changed later on, so metadata must be added to data in order to add semantics, which can be used later on.
+	\item \textbf{Intelligent Searching} -- It is important to find content in a suitable period of time. Search engines should be enhanced to use the metadata of information, so that it can search the semantics of content in order to perform search operations in a reasonable time frame.
+	\item \textbf{Persistence (What to discard?)} -- Wherever possible, data should be discarded. This has the net effect of making the size of the data smaller, and therefore easier to operate upon. Some data may not be relevant to an application, or might not be required again. Some data could be created whenever it is needed, rather than being stored. The cost of processing (to recreate the data) may be outweighed by the impact of storing more data.
+	\item \textbf{Governance} -- The management of the information and knowledge contained within storage. Issues such as the quality of the incoming data is important, as the quality of what you put in affects the quality of the insights you derive. This makes governing \textbf{quality control} important.
+\end{itemize}
+
+\subsection{MapReduce}
+
+One model for running massively scalable, distributed \textbf{computations} across a large amount of data is called \textbf{MapReduce}. The principal of MapReduce is to:
+\begin{enumerate}
+	\item break a task down into lots of chunks
+	\item execute a function across all of them in parallel (\textbf{map})
+	\item reduce the resulting values down into 1 value (\textbf{reduce}).
+\end{enumerate}
+An example of a (very simple) map reduce job would be to take a sequence of numbers, double them (map a double function across the sequence) and then sum them (reducing them into one value).
+
+Figure \ref{fig:mapreduce} shows a single master process dividing the work up and allocating it to a number of worker/slave processes. Once they've finished processing the given data, they sent the results back to the master process who \textbf{aggregates the results into the final insight/value}. This makes MapReduce is an architectural pattern designed to solve concurrent problems using a master-slave approach.
+
+TODO: madreduce figure
+
+MapReduce is well suited to large data processing problems, like those typically found in Big Data, because \textbf{parallelising the processing} to speed up the computation (and not overload an individual machine with that much memory) makes deriving insights \textbf{feasible}. It uses \textbf{divide and conquer} to enable the scalability Big Data demands.
+
+\subsubsection{Hadoop}
+
+\textbf{Hadoop} is a data processing framework built on the idea of MapReduce. It was initially created by Yahoo, and has now been open sourced. Hadoop clusters can be provided \textbf{on-demand in the cloud}, which lowers the barrier to entry to solving Big Data problems. This allow companies to easily derive insights into and scale their usage depending on the amount of data they have (which could grow/shrink unexpectedly due to unpredictable markets).
+
+\subsubsection{Concurrency}
+
+Concurrency is used in order to keep the system efficient. The primary advantage of MapReduce is that it can be parallelised fairly trivially. This is achieved by running the map command across many machines, using a \textbf{function} that does not require data from any other process. However, some problems can still have parallelisation challenges (such as having to communicate partial solutions).
+
+The reduce step of the process is also more difficult to parallelise, as it is implied that all map stages must be completed. Sometimes, the reduce step can be divided into multiple reduce steps, which divide and conquer the process. For example, in the simple double and sum problem, results can be reduced together (summed) as soon as they have been doubled. These \textbf{partial reductions/aggregations} allow calculation to happen asynchronously (without blocking waiting for maps to finish) and in parallel, increasing performance.
+
+\subsubsection{High Level Abstraction}
+
+All of this provides a high level abstraction for the programmer, who no longer has to worry about the \textbf{standard issues with concurrency} (such as deadlocks, race conditions, debugging concurrent problems, etc) and can merely worry about specifying what computation needs to happen (rather than how it is distributed and ran concurrently). 
+
+The programmer provides 2 functions which define the computation which must be performed:
+\begin{equation}
+\begin{aligned}[b]
+	\text{map}(k, v) \rightarrow <k', v'>* \\
+	\text{reduce}(k', v') \rightarrow <k', v'>*
+\end{aligned}
+\end{equation}
+The execution framework (such as Hadoop) handles the rest. 
+
+Usually the programmer will also specify a \textbf{method to partition the data}, in order to control how it is sent to nodes. They will also provide a \textbf{combine function}, which acts as a mini-reduce (in memory of the map node) in order to reduce on network traffic:
+\begin{equation}
+\begin{aligned}[b]
+	\text{partition}(k', \text{number of partitions}) \rightarrow \text{partition for }k \\
+	combine(k', v') \rightarrow <k', v'>*
+\end{aligned}
+\end{equation}
+
+TODO: in-place figure of more detailed map-reduce
+
+The MapReduce \textbf{runtime} (such as Hadoop) will usually be responsible for scheduling workers to handle map jobs (and partial reduces), moving the data to the appropriate processes (distributed) and any synchronization that needs to occur. It will also handle faults, such as if a worker fails. This makes it easier for application developers to create systems that process Big Data.
+
+\subsubsection{Distributed File System}
+
+A \textbf{Distributed File System} is a way of solving the problem of \textbf{moving} data around the MapReduce cluster. In Big Data problems, it would take an unfeasibly long time to move all of the data to the appropriate workers. Instead of doing this, data is stored in the \textbf{nodes which will process said data} to begin with. When a computation is taking place, nodes merely perform the action on data that they \textbf{already have stored}. This is known as:
+\begin{quote}
+	\texitt{"moving the processes to the data"}
+\end{quote} 
+
+For Hadoop, the underlying distributed file system is HDFS (Hadoop Distributed File System). 
+
+Google use a proprietary technology called GFS (Google File System), which relies on large amounts of commodity hardware (instead of blades, or other server equipment) which are designed to be fail-able. Each machine stores in the order of gigabytes, and performs MapReduce jobs on its contents using Google's proprietary MapReduce solution.
 
 \end{document}
