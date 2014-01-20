@@ -71,7 +71,12 @@ Note that the internet/intranets and the WWW are not \textbf{true} distributed s
 
 The \textbf{physical architecture} of DSes tend to follow the \textbf{client-server} model, in which servers continuously listen for one-off requests from clients, providing/serving those clients with a service or resource. This is shown in Figure \ref{fig:client-server-communication}.
 
-TODO: client and server stuff here
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{figures/client-server-architecture.png}
+	\caption{Client-Server Communication Architecture}
+	\label{fig:client-server-communication}
+\end{figure}
 
 \subsection{The PAD Model}
 
@@ -97,7 +102,12 @@ The layers of the PAD model can be applied to the Client-Server model in \textbf
 
 Figure \ref{fig:multi-tiered-architectures} shows the different ways in which the three layers can be split across. Notice how that some layers can be in \textbf{both} the client and the server.
 
-TODO: figure on multititered architectures
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{figures/multitiered-architectures.png}
+	\caption{Multi-tiered Architectures with the PAD Model}
+	\label{fig:multi-tiered-architecture}
+\end{figure}
 
 At one extreme (left of Figure \ref{fig:multi-tiered-architectures}), the Presentation Tier may be rendered on both the Client and the Server machine (for example, when using remote desktop/VNC) with everything else being present on the server. This has the advantage of having a very lightweight client.
 
@@ -107,9 +117,13 @@ Probably the \textbf{most common architecture} is to have the Presentation Tier 
 
 Figure \ref{fig:multi-tiered-client-server} shows the communicate between the three different tiers of the system (which are typically run on different machines in the system. The Presentation tier sends a request to the Application tier. The Application tier then sends a request for data to the Data Tier, which responses with the requested data. At this point, the Application tear processes the data and sends a response back to the Presentation tier, which has been waiting since its initial request.
 
-TODO: multi-tiered client-server
-CAPTION: A better DS: 3-Tier Client-Server Architecture 
-- an example of a server acting as a client. 
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.4]{figures/multitiered-client-server.png}
+	\caption{A better DS: 3-Tier Client-Server Architecture 
+- an example of a server acting as a client. }
+	\label{fig:multi-tiered-client-server}
+\end{figure} 
 
 \subsection{Scalability}
 
@@ -163,19 +177,26 @@ When just using sockets, the FTP protocol and soon we have limited transparency,
 
 \subsubsection{Middleware}
 
-The technologies used for providing an abstraction layer over a distributed system can be called \textbf{Middleware}. Middleware sits on top of the physical machines, to make all of them appear as a centralised system. This is shown in Figure \ref{fig:middleware}, where there are three machines which are running the same distributed applications. To the outside world, the three machines appear as a single system, but they are in fact communicating using Middleware.
+The technologies used for providing an abstraction layer over a distributed system can be called \textbf{Middleware}. Middleware sits on top of the physical machines, to make all of them appear as a centralised system. This is shown in Figure \ref{fig:middleware}, where there are three machines which are running the same distributed applications. To the outside world, the three machines appear as a single system, but they are in fact communicating using Middleware. That is, we want hide \textbf{heterogeneity} of the underlying 
+platforms from applications. Without middleware, distributed applications would be sitting directly above each individual machine, result in no transparency.
 
 Distributed applications, which actually perform the required business logic, are built on top of the Middleware. This is done through the use of APIs, libraries and toolkits.
 
-TODO: middleware figure from slides
-CAPTION: General structure of a distributed system as middleware 
-• Important goal: hide heterogeneity of the underlying 
-platforms from applications -- WITHOUT MIDDLEARE DISTRIBUTED APPLICATIONS ARE SITTING DIRECTLY ON EACH INDIVIDUAL MACHINE!!! NO TRANSPARENCY!
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{figures/middleware.png}
+	\caption{General Structure of a Distributed System as Middleware}
+	\label{fig:middleware}
+\end{figure} 
 
-TODO: miuddleare openess diagram
-CAPTION: In an open middleware-based distributed system, the 
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{figures/middleware-openness.png}
+	\caption{In an open middleware-based distributed system, the 
 protocols used by each middleware layer should be the 
-same, as well as the interfaces they offer to applications. Makes the DS open for new machines!
+same, as well as the interfaces they offer to applications. This makes the DS \textbf{open} for new machines to join the DS!}
+	\label{fig:middleware-openness}
+\end{figure} 
 
 An example of a Middleware system is \textbf{RMI (remove method invocation)}. This allows calls to a distributed system to be abstracted into one object calling a method on another object (in much the same way as Object Orientated Programming). Invoking local and remote methods looks exactly the same -- the message is just passed over the network. This typically requires some setup code, to configure management of the remote objects themselves (their names, locations, etc.) so that methods can be invoked on them. The abstraction saves the programmer from needing to know about the \textbf{underlying network protocols}.
 
@@ -204,11 +225,21 @@ The OSI model is a seven-layer architecture which is used to implement Internet 
 	\item \textbf{Physical} -– This is the actual physical hardware the network uses: wires, wireless receivers, routers, computers and so on.
 \end{itemize}
 
-TODO: in-place figure layered protocol of OSI
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{figures/osi.png}
+	\caption{7-Layer OSI Model for the Internet}
+	\label{fig:osi}
+\end{figure} 
 
 We can \textbf{adapt} the OSI reference model to include Middleware. We replace the Presentation and Session layers with a \textbf{Middleware layer}, which sits below the Application layer and above the Transport layer (where the TCP and UDP protocols lie). This is shown in Figure \ref{fig:osi-middleware}
 
-TODO: OSI adapted to middleware
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.6]{figures/middleware-osi.png}
+	\caption{Where Middleware Sits in the OSI Model}
+	\label{fig:osi-middleware}
+\end{figure} 
 
 \subsection{Socket Programming}
 
@@ -235,9 +266,12 @@ If a client wants to close the connection, the following protocol is followed:
 	\item Client acknowledges responses with \texttt{ACK(FIN)}, which may or may not be received by the server
 \end{enumerate}
 
-TODO: in-place figure of client-server TCP start/close connection
-CAPTION: a) Normal operation of TCP. 
-b) Transactional TCP.
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{figures/tcp-normal-transactional.png}
+	\caption{(a) Normal Operation of TCP (b) Transactional TCP}
+	\label{fig:tcp-normal-transactional}
+\end{figure} 
 
 \subsubsection{UDP}
 
@@ -249,12 +283,14 @@ In \textbf{UDP (User Datagram Protocol)} there is no handshaking process or `con
 
 The concept of remotely calling a function can be applying to \textbf{objects} as well. You can easily have a client remotely invoking methods on an object, or remotely accessing the object's state (i.e. fields).
 
-This is achieved through \textbf{stubs/proxies}. The client invokes a method on the proxy object (without \textit{knowing} it's going to make a remote call) and the proxy object sends off the remote method invocation message to the remote machine. This request then hits a server stub, which parses the message and calls the correct method using the correct parameters. It takes the result of the local method call and sends it back to the client in  a response. The client stub receives the response.
+This is achieved through \textbf{stubs/proxies}. The client invokes a method on the proxy object (without \textit{knowing} it's going to make a remote call) and the proxy object sends off the remote method invocation message to the remote machine. This request then hits a server stub, which parses the message and calls the correct method using the correct parameters. It takes the result of the local method call and sends it back to the client in  a response. The client stub receives the response. This means that objects can be treated as local objects, even when they're actually stored on a remote component/server of the system.
 
-This means that objects can be 
-
-% TODO: http://www.cs.rutgers.edu/~pxk/416/notes/images/15-rpc-flow.png
-TODO: figure of stubs
+\begin{figure}
+	\centering
+	\includegraphics[scale=1.4]{figures/rpc-flow.png}
+	\caption{Remote Procedure Call Components and Process}
+	\label{fig:rpc-flow}
+\end{figure} 
 
 \subsection{Message-Passing Interface (MPI)}
 
@@ -278,14 +314,22 @@ Servlets are Java classes that implement a specific service via a \textbf{HTTP r
 
 A \textbf{web container} are executed on web servers and \textbf{host Java web applications}. Servlet classes are compiled and installed in a web container (e.g. Tomcat), which is made accessible to clients via a web server (e.g. Apache). This is shown in Figure \ref{fig:web-container}, where there are three ways a client can \textbf{communicate with web applications} stored in a web container. A client can either directly communicate with a web container, communicate with a server who then sends a request to the web container as a client (relaying the response back to the original client) or the client can directly communicate with the server, which has a web container \textit{within} it.
 
-TODO: bottom figure of web container
-CAPTION: MENTION THREE ALTERNATE WAYS OF COMMUNICATING WITH web container
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{figures/web-container.png}
+	\caption{Three Ways a Client Can Communicate with a Web Container}
+	\label{fig:web-container}
+\end{figure} 
 
 One way of \textbf{installing} servlets into a web container is to package a collection of servlets as a \textbf{web application} in a Java \textbf{WAR (Web Archive}) file. This is similar to a JAR file, but used specifically for Java web applications by web containers.
 \textbf{JSP} stands for Java Server pages and is way of embedding business logic into the presentation layer (i.e. web pages) of the web application. You embed Java code into special HTML tags, which gets executed when the web page is requested. The output of the executed code is placed in the spot where the Java code was in the document. Figure \ref{fig:jsp-processes} shows what happens when a user requests a service that is represented as JSP file. It is processing using a \textbf{JSP Translator}, which takes a JSP file, executes the Java code inside it and replaces said Java code with code's output.
 
-TODO: JSP processing figure
-CAPTION: Process of producing a HTML response using a JSP file (e.g. request to URL \texttt{http://www.server.com:8080/servlet/JSPFile}
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{figures/jsp-processing.png}
+	\caption{Process of producing a HTML response using a JSP file (e.g. request to URL \texttt{http://www.server.com:8080/servlet/JSPFile}}
+	\label{fig:jsp-processes}
+\end{figure} 
 
 Using servlets and JSP allow you to write pages of HTML with \textbf{embedded servlet API calls and raw Java logic}. However, this has the following \textbf{disadvantages}:
 \begin{itemize}
@@ -352,7 +396,12 @@ However, the cost of JSON being more lightweight is a \textbf{lack of formality}
 
 Java has a specific implementation of RMI. As a `Java-only' solution, it is much simpler than a language independent solution such as CORBA. It is designed to fit in with the Java language as seamlessly as possible -- calling a method on a remote object \textbf{appears identical} to calling a method on a local object (as remote and local objects are type-equivalent). 
 
-TODO: RMI architecture diagram
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{figures/rmi-architecture.png}
+	\caption{RMI Architecture}
+	\label{fig:rmi-architecture}
+\end{figure} 
 
 \subsubsection{Remote Object References}
 
@@ -382,17 +431,27 @@ A ROR is not seen directly, as this would not be very "friendly" to program agai
 
 When the server receives the message, a \textbf{skeleton} object unmarshals the message and does the actual method invocation requested (calling the real object on the server). The return value is then marshalled by the skeleton, and sent to the clients proxy object. This sequence of events is also shown in Figure \ref{fig:rmi-event-sequence}. 
 
-TODO: RMI event sequence diagram from "Java RMI"
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{figures/rmi-event-sequence.png}
+	\caption{Sequence of Events when a Remote Method is Invoked in Java RMI}
+	\label{fig:rmi-event-sequence}
+\end{figure} 
 
 \subsubsection{Classes and Interfaces}
 
-There are various classes and interfaces in the Java implementation of RMI. 
+There are various classes and interfaces in the Java implementation of RMI.
 
 A user specified interface is used to \textbf{describe the methods and properties} of the remote object. This interface must inherit from the \texttt{java.rmi.Remote} interface. Methods must potentially throw the \texttt{java.rmi.RemoteException} to indicate that something has gone wrong with the remote invocation of the method. A client must be prepared to handle the \texttt{RemoteException} as well as any application-specific exceptions. There may be little or no information on whether the call succeeded or failed when a \texttt{RemoteException} is thrown, so the client and server must be designed with this in mind. 
 
 The actual class implementation of the remote object should inherit from \texttt{UnicastRemoteObject}. This makes the object \textbf{accessible remotely} on a host-to-host basis. An object instance must be alive when the service is requested, and must be reachable using TCP/IP. If the object can be persisted (e.g. stored in a file or database), it should inherit \texttt{Activatable}.. Having your RMI class extend \texttt{MulticastRemoteObject} allows the object to be replicated across multiple machines (for greater fault tolerance).
 
-TODO: in-place figure of main RMI classes
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{figures/rmi-java-classes.png}
+	\caption{Java RMI Classes}
+	\label{fig:rmi-java-classes}
+\end{figure} 
 
 Previously, a separate compilation step would be used to generate the Proxy/Stub code, but it is now generated as part of the standard Java compilation process. 
 
@@ -440,7 +499,12 @@ The two architectures differ in several ways. Depending on the application, diff
 
 \textbf{Indirection} is when you send off multiple requests/tasks \textbf{in bulk}, as a single request to a \textbf{proxy}, who then sends all the individual requests to the desired machines (see Figure \ref{fig:indirection}). The reason you may want to do this is to minimise the number of requests over a \textbf{WAN (wide area network)} by having the proxy be physically close to the target machines. That is, the proxy is connected to the target machines over a \textbf{LAN (local area network}). This reduces the network communication overhead that can occur when performing large amounts of requests.
 
-TODO: indirection diagram with annotations from my slides -- COMBINE BOTH DIRECT AND INDIRECTION AND USE CAPTION TO LABEL! ARROW TO WAN SAYING BAD ON LEFT DIAGRAM
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{figures/indirection.png}
+	\caption{Indirection as Technique to Reduce Number of Requests over WAN}
+	\label{fig:indirection}
+\end{figure} 
 
 \subsubsection{Performance Questions}
 
@@ -456,7 +520,12 @@ There are primarily 4 different basic types, based on the number of tiers.
 
 \subsection{1 Tier}
 
-TODO: 1-tier architecture figure
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.3]{figures/1-tier.png}
+	\caption{1-Tier Service Orientated Architecture}
+	\label{fig:one-tier-architecture}
+\end{figure} 
 
 1 Tier software systems are typically legacy applications created on mainframes. An unintelligent client will connect to the mainframe which allows the user to communicate with the system (e.g. via command line), but fundamentally everything takes place on the mainframe. The single tier (the mainframe) contains the logic for all 3 layers. 
 
@@ -464,7 +533,12 @@ This is a fundamentally monolithic approach to software design, which places an 
 
 \subsection{2 Tier}
 
-TODO: 2-tier architecture figure
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.3]{figures/2-tier.png}
+	\caption{2-Tier Service Orientated Architecture}
+	\label{fig:two-tier-architecture}
+\end{figure} 
 
 With the advent of the PC, unintelligent terminals declined in popularity and the presentation layer was moved away from the centralised mainframe, and towards the (now more powerful) \textbf{client machines}. This allowed the presentation layer to utilize the newly available power of the client, but also allowed for a more flexible presentation tier, as it could be modified without increasing the complexity of the rest of the system. Different clients could have completely different presentation tiers, but use the same underlying system. This has become a popular architecture, particularly within client-server architectures. 
 
@@ -476,7 +550,12 @@ Custom code added to clients to glue together services is also not reusable. As 
 
 \subsection{3 Tier}
 
-TODO: 3-tier architecture figure
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.3]{figures/3-tier.png}
+	\caption{3-Tier Service Orientated Architecture}
+	\label{fig:three-tier-architecture}
+\end{figure} 
 
 In order to overcome the problems of 1 and 2 tier systems, 3-tiers systems were developed. The \textbf{3 Tier architecture} provides a clean separation between each of the layers, giving the application logic its own tier which sits in-between the client and any back-end resources required.
 
@@ -488,7 +567,12 @@ However, it can be difficult to integrate some systems together. Sometimes, \tex
 
 \subsection{N Tier}
 
-TODO: N-tier architecture figure
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.3]{figures/n-tier.png}
+	\caption{N-Tier Service Orientated Architecture}
+	\label{fig:n-tier-architecture}
+\end{figure} 
 
 N Tier architectures aim to \textbf{generalize} even further, to allow for integration between multiple 3 Tier systems. The requirement for an N Tier architecture may stem from either:
 \begin{itemize}
@@ -511,7 +595,12 @@ As a way of responding to the issues of conventional, tiered systems, many appli
 
 A \textbf{service} is defined via a contract. If the correct requests are sent, responses will be returned from the service \textbf{as expected}. That is, a service publishes its required inputs and expected outputs and is stating that it will \textbf{follow that specification} when a client invokes the service.
 
-TODO: figure of SOA
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.4]{figures/soa.png}
+	\caption{Typical Service Orientated Architecture}
+	\label{fig:soa}
+\end{figure} 
 
 Figure \ref{fig:soa} shows the service orientated architecture. There are 3 roles for participants in a Service Orientated Architecture:
 \begin{itemize}
@@ -520,9 +609,14 @@ Figure \ref{fig:soa} shows the service orientated architecture. There are 3 role
     \item The \textbf{Requestor} uses a broker to find, bind to, and use a service.
 \end{itemize}
 
-A service consumer (requestor) understands the contract the service implements, and adheres to the policy specified in the contact. The requester also \textbf{binds} to the service's \textbf{endpoint}, which is virtual identifier specifying the \textbf{location} of the resource. This is shown in Figure \ref{fig:provision-and-consumption}.
+A service consumer (requestor) understands the contract the service implements, and adheres to the policy specified in the contact. The requester also \textbf{binds} to the service's \textbf{endpoint}, which is virtual identifier specifying the \textbf{location} of the resource. This is shown in Figure \ref{fig:soa-provision-and-consumption}.
 
-TODO: provision and consumption figure 
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.4]{figures/soa-process.png}
+	\caption{Provision and Consumption of a Service using a SOA}
+	\label{fig:soa-provision-and-consumption}
+\end{figure} 
 
 The primary differences between Services and traditional Tiered architectures are as follows:
 \begin{itemize}
@@ -568,7 +662,12 @@ SOAP is one method of developing web services. SOAP stands for \textbf{Simple Ob
 
 Figure \ref{fig:soap} shows the process of invoking a web service implement with SOAP. A SOAP envelope is sent to a remote server, whose SOAP processor opens the envelope to determine what the request is asking for (e.g. method, params, etc.). It compares the RPC call in the envelope to its WSDL document to ensure there is a match. If so, the server performs the necessary business logic (i.e. executes the function), wraps the result in a SOAP message and then sends the SOAP XML response to the client.
 
-TODO: soap process
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.4]{figures/soap.png}
+	\caption{Process of SOAP Message, from Client to Server and Back Again}
+	\label{fig:soap}
+\end{figure} 
 
 \subsubsection{Message Format}
 
@@ -578,7 +677,12 @@ The \textbf{body} of the SOAP document represents the \textbf{requested method c
 
 The \textbf{response} from the server is structured similarly. The root of the SOAP response body is conventionally the same as the the request, with `Response' appended. Sub elements represent one or many values returned from the method.
 
-TODO: in-placwe figure of "how XML becomes soap, with bullet points"
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{figures/soap-envelope.png}
+	\caption{SOAP Message Envelope Format, with Corresponding XML}
+	\label{fig:soap-message-format}
+\end{figure} 
 
 \subsubsection{WSDL}
 
@@ -610,7 +714,12 @@ A web page you'd retrieve via HTTP is a \textbf{resource}. So it is a JPEG pictu
 \end{itemize}
 and so on.
 
-TODO: in-place REST triangle
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{figures/rest-triangle.png}
+	\caption{REST Triangle. The verbs and content types are \textbf{constrained} because of the use of existing standards, but the nouns (services) are \textbf{unrestricted}.}
+	\label{fig:rest-triangle}
+\end{figure}
 
 Resources are requested and modified through the standard HTTP verbs:
 \begin{itemize}
@@ -690,7 +799,12 @@ In order to get access to a resource, they must be \textbf{named}. Whether that 
 
 A name represents a series of \textbf{attributes} of an entity. \textbf{One} of these attributes will typically give access to the entity. Changing a name into its related attributes is known as \textbf{resolving} the name. Figure \ref{fig:name-resolution} shows the archetypal example of a name resolution system, the WWW. Notice how the URL specifies different components of the resource's name, all of which are resolved to retrieve the final file.
 
-TODO: figure of name resolution example
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.6]{figures/naming-resolution-example.png}
+	\caption{An Example Resolving Name to Exact Resource (DNS)}
+	\label{fig:name-resolution}
+\end{figure}
 
 \textbf{Access Points} are ways of actually operating on an entity or resource. The name of an access point is usually referred to as its \textbf{address}, which is also usually thought of as the address of the entity itself. A resource can have \textbf{several access points} (e.g. URL redirection), and they can change over time. Because of this, a \textbf{location-independent} name is usually chosen for resources.
 
@@ -708,7 +822,12 @@ The namespace is the collection of valid names recognized by the service. They c
 
 Common examples of a hierarchical namespace would be a \textbf{file system or DNS}. A file system has directory nodes (actual directories, or folders), which are used to allow multiple documents to have the same name and to help navigate to a document, and leaf nodes (the actual documents), which store the contents. A file system also shows that a hierarchical namespace graph does not have to be a tree -- \textbf{symbolic links} can be used to reference the same document from multiple directories (resulting in cycles).
 
-TODO: in-place figure of file system naming graph
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{figures/naming-filesystem.png}
+	\caption{Operating System Filesystems are Examples of Hierarchial Naming Systems}
+	\label{fig:filesystem-naming}
+\end{figure}
 
 In order to find nodes, an \textbf{initial starting point} must be known. In a file system, this is traditionally the first inode of a logical disk (which can in turn be calculated by information from the disks superblock). In other systems, some starting point must be defined (like a \textbf{name server address} in DNS).
 
@@ -720,7 +839,12 @@ This is known as \textbf{distributed naming}, which is something DNS performs. S
 
 \subsection{Example Naming Service -- DNS}
 
-TODO: DNS figure
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{figures/dns-graph.png}
+	\caption{DNS Naming System's Graph (Multiple Layers)}
+	\label{fig:dns-graph}
+\end{figure}
 
 A naming service is used to look up entities based on their names. The most prominent example of a directory service is DNS. DNS is a \textbf{traditional naming service}. You give it a name and it resolves the name to a node (which contains an IP address among other things) in the \textbf{naming graph}, returning said node. Conceptually it is equivalent to a person using a telephone directory (they give a name and get a telephone number).
 
@@ -753,11 +877,21 @@ DNS Lookup can be \textbf{Iterative}, \textbf{Recursive} or \textbf{Multicast}.
 
 \textbf{Iterative} resolution relies on the client going to the root server and requesting a single child node, making a requests to the child for the next child, and so on. It iteratively requests the nnext child the process until it reaches the correct node (a leaf). For example, in \textbf{leeds.ac.uk}, the root server would be consulted which would return the .uk server. The .uk server would return the .ac and the .ac would return the .leeds node. The key behind this is that the \textbf{client} is requesting from each name server, as shown in Figure \ref{fig:dns-iterative-lookup}. In this example, the client has to make 4 calls over a WAN, which is very slow.
 
-TODO: figure of iterative resolution
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.6]{figures/dns-iterative-resolution.png}
+	\caption{Iterative Name Resolution with DNS}
+	\label{fig:dns-iterative-lookup}
+\end{figure}
 
-\textbf{Recursive} resolution relies upon the first server directly asking the second server, and so on and so forth (rather than simply pointing the client and telling it to ask). The original name server will then respond to the clients request directly (so there is only one request \textbf{visible to the client}. Recursive name resolution places greater demand on the name server, so some name servers with particularly high throughput may not support it (for example, in the global layer). However, in a recursive solution the name servers can \textbf{cache addresses}, gradually learning about more name servers which handle lower-level nodes and passing this benefit on from that point onwards. In an iterative resolution approach, only the clients name resolver gets the benefit of the cache (and other clients won't). A recursive approach may also reduce the communication overhead, depending on the overhead between name servers. This is because they will probably have better connections and less latency between each other than between a client and name server (perhaps due to being geographically close). In Figure \ref{fig:dns-recursive-lookup}, the client only makes a single  WAN call, with the requests between name servers being shoter communication.
+\textbf{Recursive} resolution relies upon the first server directly asking the second server, and so on and so forth (rather than simply pointing the client and telling it to ask). The original name server will then respond to the clients request directly (so there is only one request \textbf{visible to the client}. Recursive name resolution places greater demand on the name server, so some name servers with particularly high throughput may not support it (for example, in the global layer). However, in a recursive solution the name servers can \textbf{cache addresses}, gradually learning about more name servers which handle lower-level nodes and passing this benefit on from that point onwards. In an iterative resolution approach, only the clients name resolver gets the benefit of the cache (and other clients won't). A recursive approach may also reduce the communication overhead, depending on the overhead between name servers. This is because they will probably have better connections and less latency between each other than between a client and name server (perhaps due to being geographically close). In Figure \ref{fig:dns-recursive-lookup}, the client only makes a single  WAN call, with the requests between name servers being shorter communication.
 
-TODO: figure of recursive resolution
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.6]{figures/dns-recursive-resolution.png}
+	\caption{Recursive Name Resolution with DNS}
+	\label{fig:dns-recursive-lookup}
+\end{figure}
 
 \textbf{Multicast} resolution requires the name to be broadcast to \textbf{all name servers}, and the one that is holding the binding for the name responds. An additional server is required, to handle what happens if a name is not bound. 
 
@@ -766,7 +900,6 @@ The communication costs of iteration and recursive lookup are shown in Figure \r
 \section{Directory \& Discovery Services}
 
 Directory and Discovery Services are used to find entities within a graph. They offer alternative approaches for performing the same action - a \textbf{directory} service looks up a resource by its name or other attributes, where a \textbf{discovery} service finds a resource which matches some specification. 
-
 
 \subsection{Directory Service}
 
@@ -868,9 +1001,14 @@ If we set a \textbf{maximum allowed drift rate} $p$, we consider a time as \text
 \end{equation}
 where $0 \leq p \leq 1$. Currently, clocks are generally accurate to within $10^{-5}$ of the actual time, so $p = 10^{5}$ would be a good maximum drift rate.
 
-By imposing a maximum drift rate $p$, two clocks may as far as $2p\Delta t$ apart. This occurs because both clocks may be drifting away from UTC at a maximum of $p$, but in \textbf{opposite directions} (one moving fast, one moving slow). This is
+By imposing a maximum drift rate $p$, two clocks may as far as $2p\Delta t$ apart. This occurs because both clocks may be drifting away from UTC at a maximum of $p$, but in \textbf{opposite directions} (one moving fast, one moving slow).
 
-TODO: drift as function of UTC figure
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.6]{figures/utc-drift.png}
+	\caption{Visualisation of UTC Drift Measurement}
+	\label{fig:utc-drift}
+\end{figure}
 
 By having a maximum drift rate ($p$), 2 clocks within a distributed system can be guaranteed to be within $2p \theta t$ at time $T$. This occurs because both clocks may be drifting away from UTC at a maximum of $p$, but in opposite directions (one moving fast, one moving slowly). This is shown in Figure \ref{fig:drift-utc}.
 
@@ -886,7 +1024,12 @@ The second major issue is \textbf{network latency}. The message containing the c
 	C_i(t) = C_{UTC} - \frac{t_1 - t_0 - I}{2}
 \end{equation}
 
-TODO: propagation time figure
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.6]{figures/propagation-time.png}
+	\caption{Computing Time it Took Real UTC Time to Propagate (Arrive) at a Server}
+	\label{fig:propagation-time}
+\end{figure}
 
 \subsection{Berkeley Algorithm}
 
@@ -894,9 +1037,14 @@ In the \textbf{Berkeley algorithm}, there is a \textbf{time daemon} which asks a
 
 It is used to \textbf{minimise time differences} when there is no central UTC receiver to work from.
 
-TODO: berkeley algortithm
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{figures/berkeley-algorithm.png}
+	\caption{A Time Daemon Synchronising all the Clocks in the System using the Berkeley Algorithm}
+	\label{fig:time-berkeley}
+\end{figure}
 
-Figure \ref{fig:time-nerkeley} shows an example of the Berkeley algorithm running on a DS. The time daemon computes the average of all three times (including the \textbf{time daemons}) and then sets every clock in the system to that average (this again includes the time daemon!)
+Figure \ref{fig:time-berkeley} shows an example of the Berkeley algorithm running on a DS. The time daemon computes the average of all three times (including the \textbf{time daemons}) and then sets every clock in the system to that average (this again includes the time daemon!)
 
 \subsection{Network Time Protocol}
 
@@ -904,10 +1052,14 @@ In order to send timing information over the Internet, \textbf{NTP (Network Time
 
 In order to maintain scale, NTP forms a logical hierarchy called a \textbf{synchronization subnet}. Primary servers, those in \textbf{stratum 1}, are connected directly to the time source (the UTC reference point). Secondary servers synchronize with those in stratum 1, and so forth. Leaf nodes are individual users workstations. The accuracy of the time decreases proportionally to the layer of the strata (the bottom layer having the least accurate time). 
 
-NTP is the time-equivalent of NDS. It is a highly robust service, which has been widely deployed throughout the Internet for a number of years. It is generally recognized as the best in class solution for unreliable networks, providing accurate timing information to within a few milliseconds over the Internet, or within sub-milliseconds on local networks.
+NTP is the time-equivalent of DNS. It is a highly robust service, which has been widely deployed throughout the Internet for a number of years. It is generally recognized as the best in class solution for unreliable networks, providing accurate timing information to within a few milliseconds over the Internet, or within sub-milliseconds on local networks.
 
-TODO: NTP diagram: Caption: Accurate decreases as we move down the strata
-
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{figures/ntp.png}
+	\caption{Hierarchical Architecture of Servers using NTP. Accuracy of time decreases as we move down the strata, with the roots (stratum 1) being servers that directly receive time from satellites.}
+	\label{fig:ntp}
+\end{figure}
 
 \section{Current Trends}
 
@@ -931,7 +1083,12 @@ This is analogous to other common utilities, such as gas or electricity. Electri
 
 The main problem that Grids attempt to solve is the sharing of computer resources between dynamic collections of individuals, organizations and institutions. These communities (or \textbf{virtual organizations}) can share computing resources as they pursue common goals. An example of this is the \textbf{White Rose Grid}, which the University of Leeds, University of York and University of Sheffield often use to collaborate on shared projects.
 
-TODO: figure of power grid and grid with caption saying how it's analogous to electricity
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{figures/grid.png}
+	\caption{Grid computing is analogous to the electricity grid. You just tap into the grid and receive access to the desired resources (which can be \textit{anything}).}
+	\label{fig:ntp}
+\end{figure}
 
 The concept of a grid has transformed research, business, medicine and engineering. According to Ian Foster, there are \textbf{three major requirements for a grid system}:
 \begin{itemize}
@@ -939,8 +1096,6 @@ The concept of a grid has transformed research, business, medicine and engineeri
     \item \textbf{Standard, Open, General-purpose protocols and interfaces} -- reuse as much as you can/ This relies on standard and open protocols for all machines to communicate easily (makes adding new machines to grid and \textbf{scaling} it more easier)
     \item \textbf{Non-Trivial Quality of Service}--  including the guaranteed ability of remote access, resource management, fault management (and tolerance), guarantees of performance and monitoring.
 \end{itemize}
-
-TODO: figure showing grid metaphor diagram
 
 \subsection{Layered Grid Architecture}
 
@@ -953,15 +1108,25 @@ Figure \ref{fig:layered-grid-architecture} shows the \textbf{layered} architectu
 	\item \textbf{Fabric} -- about controlling things locally. Controls access to, and control of, \textbf{computational and storage resources}, catalogues and networks
 \end{itemize}
 
-TODO: layered grid figure
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{figures/grid-layered-architecture.png}
+	\caption{Layered Grid Architecture}
+	\label{fig:layered-grid-architecture}
+\end{figure}
 
 \subsection{Open Grid Services Architecture}
 
 The \textbf{Open Grid Services Architecture (or OGSA)} is motivated by the need to integrate \textbf{services} (not just computing power) across distributed virtual organizations, all with different platforms and technologies (heterogeneous). It is designed to focus on the nature of the services in the grid, that respond to particular messages. In other words, it is a way of seeing the grid as a \textbf{extensible set of services}.
 
-This vision can be combined with web services to inherit many of their advantages, such as service description and discovery. Pretty much \textbf{everything} becomes a service. However, grid services (and web services in general) tend to provide clients with the ability to view and modify the state of entities (resources). Whilst services are usually designed in this manner (despite the stateless nature of HTTP), there is no \textbf{explicit} interface indicating that the service is \textbf{stateful}. In other words, web services are stateless unless explicitly stated -- but how does a grid know this? See Figures \ref{fig:stateless-web-invocation} and \ref{fig:stateless-web-invocation} for an illustrating of stateless web services and the stateful equivalent.
+This vision can be combined with web services to inherit many of their advantages, such as service description and discovery. Pretty much \textbf{everything} becomes a service. However, grid services (and web services in general) tend to provide clients with the ability to view and modify the state of entities (resources). Whilst services are usually designed in this manner (despite the stateless nature of HTTP), there is no \textbf{explicit} interface indicating that the service is \textbf{stateful}. In other words, web services are stateless unless explicitly stated -- but how does a grid know this? See Figure \ref{fig:stateless-stateful-web-invocation} for an illustration of stateless web services and the stateful equivalent.
 
-TODO: stateless and stateful figures
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{figures/stateless-stateful-services.png}
+	\caption{Stateless and Staeful Service Invokation over Web (HTTP)}
+	\label{fig:stateless-stateful-web-invocation}
+\end{figure}
 
 The \textbf{Web Service Resource Framework (WSRF)} is designed to solve this issue. WSRF is a set of 5 technical specifications, defined in terms of message exchanges and XML definitions. It allows web service resources to be declared, created, accessed, monitored or observed for change, and destroyed via conventional web service mechanisms.  WSRF acts as an \textbf{extension} of \textit{conventional} web services. OGSA \textbf{requires} WSRF to be in place.
 
@@ -1040,7 +1205,12 @@ There are various use cases for cloud computing:
 \end{enumerate}
 Figure \ref{fig:cloud-use-cases} illustrates these use cases. The numbers by each diagram show which use case it corresponds to.
 
-TODO: cloud use cases
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.7]{figures/cloud-use-cases.png}
+	\caption{Various Use Cases for Clouds and the Different Types of Clouds Available}
+	\label{fig:cloud-use-cases}
+\end{figure}
 
 \paragraph{\textbf{NOTE: }} A cloud broker could deliver hybrid clouds to users, without the users actually knowing the clouds using underneath . The broker acts as middleman that gets the most optimal resources for the user!
 
@@ -1062,7 +1232,12 @@ There are three main types of service layers within a cloud. Any of these 3 serv
 
 \subsection{Typical Cloud Architecture}
 
-TODO: in-place figure of (layered) cloud
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{figures/cloud-layered-architecture.png}
+	\caption{Layered Cloud Architecture}
+	\label{fig:cloud-layered-architecture}
+\end{figure}
 
 A typical \textbf{cloud architecture} has four main layers, which from the bottom layer to the top are:
 \begin{itemize}
@@ -1102,7 +1277,20 @@ The primary technology behind virtualization is a \textbf{hypervisor}. This part
 
 The prime distinction between types of hypervisor is the environment in which they run. Some hypervisors execute "on the metal" (aka, without an operating system), whereas others execute \textbf{within} the operating system as a standard application.
 
-TODO: in-place figure of hysical infrastructure
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{figures/cloud-physical-architecture.png}
+	\caption{Physical Architecture of a Cloud}
+	\label{fig:cloud-physical-architecture}
+\end{figure}
+
+Figure \ref{fig:cloud-physical-architecture} shows the physical architecture of a cloud. The numbered notes on the diagram are as follows:
+\begin{enumerate}
+	\item \textbf{Virtual Infrastructure Manager} controls/monitors physical machines and executing Virtual Machines via a \textbf{Secure Shell }
+	\item Images necessary to start Virtual Machines are shared via a repository on \textbf{Network File System} (e.g. Hadoop/Google File System)
+	\item Additional physical machines can be \textbf{added on the fly} as the need arises
+\end{enumerate}
+
 
 \subsection{Standardization}
 
@@ -1187,7 +1375,12 @@ An example of a (very simple) map reduce job would be to take a sequence of numb
 
 Figure \ref{fig:mapreduce} shows a single master process dividing the work up and allocating it to a number of worker/slave processes. Once they've finished processing the given data, they sent the results back to the master process who \textbf{aggregates the results into the final insight/value}. This makes MapReduce is an architectural pattern designed to solve concurrent problems using a master-slave approach.
 
-TODO: madreduce figure
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.6]{figures/mapreduce.png}
+	\caption{Typical Mapreduce Process -- Partition the Work, Solve Sub-Problems Individuall and Combine into a Whole Solution}
+	\label{fig:mapreduce}
+\end{figure}
 
 MapReduce is well suited to large data processing problems, like those typically found in Big Data, because \textbf{parallelising the processing} to speed up the computation (and not overload an individual machine with that much memory) makes deriving insights \textbf{feasible}. It uses \textbf{divide and conquer} to enable the scalability Big Data demands.
 
@@ -1222,9 +1415,16 @@ Usually the programmer will also specify a \textbf{method to partition the data}
 \end{aligned}
 \end{equation}
 
-TODO: in-place figure of more detailed map-reduce
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.6]{figures/mapreduce-detailed.png}
+	\caption{Example of Mapreduce with Specific Array of Data}
+	\label{fig:mapreduce}
+\end{figure}
 
 The MapReduce \textbf{runtime} (such as Hadoop) will usually be responsible for scheduling workers to handle map jobs (and partial reduces), moving the data to the appropriate processes (distributed) and any synchronization that needs to occur. It will also handle faults, such as if a worker fails. This makes it easier for application developers to create systems that process Big Data.
+
+\paragraph{\textbf{NOTE: }} It is common to have the Mapreduce work in a tree-like fashion. A master process (root) partitions work to given to other machines (children), who then partition the work \textit{again} and distribute it to more machines. The aggregated/combined partial solutions are then propagated up the tree until the master receives the fully constructed solution.
 
 \subsubsection{Distributed File System}
 
