@@ -684,14 +684,13 @@ Java implements REST support via the Java Specification Request (JSR) 311 (other
 The reference implementation of JAX-RS is \textbf{Jersey}, which provides both a REST client and server. It uses a scanner to identify REST resources (using reflection?) and expose them using a servlet. A \textbf{ Web Application Description Language (WADL)} document is generated (which is similar to a WSDL) and automatically exposed by the servlet. 
 
 
-
 \section{Naming}
 
 In order to get access to a resource, they must be \textbf{named}. Whether that resource is a computer, printer, document or web page, it must be identifiable by a name of some form. Names could be human readable, or might be a string of bits or characters. 
 
 A name represents a series of \textbf{attributes} of an entity. \textbf{One} of these attributes will typically give access to the entity. Changing a name into its related attributes is known as \textbf{resolving} the name. Figure \ref{fig:name-resolution} shows the archetypal example of a name resolution system, the WWW. Notice how the URL specifies different components of the resource's name, all of which are resolved to retrieve the final file.
 
-TODO: figure of name resolution
+TODO: figure of name resolution example
 
 \textbf{Access Points} are ways of actually operating on an entity or resource. The name of an access point is usually referred to as its \textbf{address}, which is also usually thought of as the address of the entity itself. A resource can have \textbf{several access points} (e.g. URL redirection), and they can change over time. Because of this, a \textbf{location-independent} name is usually chosen for resources.
 
@@ -709,7 +708,7 @@ The namespace is the collection of valid names recognized by the service. They c
 
 Common examples of a hierarchical namespace would be a \textbf{file system or DNS}. A file system has directory nodes (actual directories, or folders), which are used to allow multiple documents to have the same name and to help navigate to a document, and leaf nodes (the actual documents), which store the contents. A file system also shows that a hierarchical namespace graph does not have to be a tree -- \textbf{symbolic links} can be used to reference the same document from multiple directories (resulting in cycles).
 
-TODO: in-place figure of file system naming graphc
+TODO: in-place figure of file system naming graph
 
 In order to find nodes, an \textbf{initial starting point} must be known. In a file system, this is traditionally the first inode of a logical disk (which can in turn be calculated by information from the disks superblock). In other systems, some starting point must be defined (like a \textbf{name server address} in DNS).
 
@@ -895,7 +894,7 @@ In the \textbf{Berkeley algorithm}, there is a \textbf{time daemon} which asks a
 
 It is used to \textbf{minimise time differences} when there is no central UTC receiver to work from.
 
-TODO: berkeley algortithmm
+TODO: berkeley algortithm
 
 Figure \ref{fig:time-nerkeley} shows an example of the Berkeley algorithm running on a DS. The time daemon computes the average of all three times (including the \textbf{time daemons}) and then sets every clock in the system to that average (this again includes the time daemon!)
 
@@ -1032,13 +1031,16 @@ From an economic perspective, it means businesses do not need to set up their ow
 
 There are various use cases for cloud computing:
 \begin{enumerate}
-	\item end users could access applications running on a public cloud, or from a \textit{different perspective}, an enterprise is using the cloud to delkiuver data and services to the end user
-	\item an enterprise could be using a public cloud for its internal processes
-	\item two enterprises are using the same public cloud so they can interoperate and achieve common goals (e.g. a supply chain - manufactoers, designers, stores, etc.)
-	\item the cloud is contained \textbf{within the enterprise}, which is a \textbf{private cloud}
-	\item \textbf{hybrid clouds} that combine public and private clouds together to be perform a goal. 
+	\item \textbf{End-User To Cloud} -- end users could access applications running on a public cloud, or from a \textit{different perspective}, an enterprise is using the cloud to deliver data and services to the end user
+	\item \textbf{Enterprise to Cloud} -- an enterprise could be using a public cloud for its internal processes
+	\item \textbf{Enterprise to Cloud to End-User} -- an enterprise is suing a cloud run by an external cloud provider to deliver its services to end-users
+	\item \textbf{Enterprise to Cloud to Enterprise} -- two enterprises are using the same public cloud so they can interoperate and achieve common goals (e.g. a supply chain - manufacturers, designers, stores, etc.)
+	\item \textbf{Private Cloud} -- the cloud is contained \textbf{within the enterprise} and used to run the enterprise's interal system
+	\item \textbf{Hybrid Cloud} -- a cloud that combines public and private clouds to perform a goal
 \end{enumerate}
 Figure \ref{fig:cloud-use-cases} illustrates these use cases. The numbers by each diagram show which use case it corresponds to.
+
+TODO: cloud use cases
 
 \paragraph{\textbf{NOTE: }} A cloud broker could deliver hybrid clouds to users, without the users actually knowing the clouds using underneath . The broker acts as middleman that gets the most optimal resources for the user!
 
