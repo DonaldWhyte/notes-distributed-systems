@@ -38,14 +38,12 @@
 \pagebreak
 \listoffigures
 
-\pagebreak
-\listoftables
-
 % Start the paper on a new page.
 \pagebreak
 
 
 \section{Introduction}
+
 A \textbf{distributed system (DS)} is a collection of independent computers that appears to its users as a single coherent system. 
 
 It may be alternately defined as a system in which components located at networked computers communicate and coordinate their actions \textbf{only by passing messages}.
@@ -92,11 +90,12 @@ An example of a client-server system which uses the PAD model is a \textbf{web s
 \end{itemize}
 This process, along with the logical split into the three layers is shown in Figure \ref{fig:web-search-engine-pad}.
 
+
 \subsubsection{PAD and the Client Server Model}
 
 The layers of the PAD model can be applied to the Client-Server model in \textbf{several ways}. All of the layers must be present either on the client or the server, but \textbf{how the split works} depends on the application. For example, a search engine is a typical example of where the Application and Data tiers are both provided by the server, where the Presentation Tier/User Interface is on the client machine. 
 
-Figure \ref{fig:multi-tiered-architectures} shows the different ways in which the three layers can be split across 
+Figure \ref{fig:multi-tiered-architectures} shows the different ways in which the three layers can be split across. Notice how that some layers can be in \textbf{both} the client and the server.
 
 TODO: figure on multititered architectures
 
@@ -109,6 +108,8 @@ Probably the \textbf{most common architecture} is to have the Presentation Tier 
 Figure \ref{fig:multi-tiered-client-server} shows the communicate between the three different tiers of the system (which are typically run on different machines in the system. The Presentation tier sends a request to the Application tier. The Application tier then sends a request for data to the Data Tier, which responses with the requested data. At this point, the Application tear processes the data and sends a response back to the Presentation tier, which has been waiting since its initial request.
 
 TODO: multi-tiered client-server
+CAPTION: A better DS: 3-Tier Client-Server Architecture 
+- an example of a server acting as a client. 
 
 \subsection{Scalability}
 
@@ -162,11 +163,19 @@ When just using sockets, the FTP protocol and soon we have limited transparency,
 
 \subsubsection{Middleware}
 
-The technologies used for providing an abstraction layer over a distributed system can be called \textbf{Middleware}. Middleware sits on top of the physical machines, to make all of them appear as a centralised system. This is shown in Figure \ref{fig:middlware}, where there are three machines which are running the same distributed applications. To the outside world, the three machines appear as a single system, but they are in fact communicating using Middleware.
+The technologies used for providing an abstraction layer over a distributed system can be called \textbf{Middleware}. Middleware sits on top of the physical machines, to make all of them appear as a centralised system. This is shown in Figure \ref{fig:middleware}, where there are three machines which are running the same distributed applications. To the outside world, the three machines appear as a single system, but they are in fact communicating using Middleware.
 
 Distributed applications, which actually perform the required business logic, are built on top of the Middleware. This is done through the use of APIs, libraries and toolkits.
 
 TODO: middleware figure from slides
+CAPTION: General structure of a distributed system as middleware 
+• Important goal: hide heterogeneity of the underlying 
+platforms from applications -- WITHOUT MIDDLEARE DISTRIBUTED APPLICATIONS ARE SITTING DIRECTLY ON EACH INDIVIDUAL MACHINE!!! NO TRANSPARENCY!
+
+TODO: miuddleare openess diagram
+CAPTION: In an open middleware-based distributed system, the 
+protocols used by each middleware layer should be the 
+same, as well as the interfaces they offer to applications. Makes the DS open for new machines!
 
 An example of a Middleware system is \textbf{RMI (remove method invocation)}. This allows calls to a distributed system to be abstracted into one object calling a method on another object (in much the same way as Object Orientated Programming). Invoking local and remote methods looks exactly the same -- the message is just passed over the network. This typically requires some setup code, to configure management of the remote objects themselves (their names, locations, etc.) so that methods can be invoked on them. The abstraction saves the programmer from needing to know about the \textbf{underlying network protocols}.
 
@@ -227,6 +236,8 @@ If a client wants to close the connection, the following protocol is followed:
 \end{enumerate}
 
 TODO: in-place figure of client-server TCP start/close connection
+CAPTION: a) Normal operation of TCP. 
+b) Transactional TCP.
 
 \subsubsection{UDP}
 
@@ -265,11 +276,16 @@ Servlets are Java classes that implement a specific service via a \textbf{HTTP r
 	\item \texttt{doPost()} -- Handles POST requests with mapped URL
 \end{itemize}
 
-A \textbf{web container} are executed on web servers and \textbf{host Java web applications}. Servlet classes are compiled and installed in a web container (e.g. Tomcat), which is made accessible to clients via a web server (e.g. Apache). This is shown in Figure \ref{fig:web-container}.
+A \textbf{web container} are executed on web servers and \textbf{host Java web applications}. Servlet classes are compiled and installed in a web container (e.g. Tomcat), which is made accessible to clients via a web server (e.g. Apache). This is shown in Figure \ref{fig:web-container}, where there are three ways a client can \textbf{communicate with web applications} stored in a web container. A client can either directly communicate with a web container, communicate with a server who then sends a request to the web container as a client (relaying the response back to the original client) or the client can directly communicate with the server, which has a web container \textit{within} it.
+
+TODO: bottom figure of web container
+CAPTION: MENTION THREE ALTERNATE WAYS OF COMMUNICATING WITH web container
 
 One way of \textbf{installing} servlets into a web container is to package a collection of servlets as a \textbf{web application} in a Java \textbf{WAR (Web Archive}) file. This is similar to a JAR file, but used specifically for Java web applications by web containers.
+\textbf{JSP} stands for Java Server pages and is way of embedding business logic into the presentation layer (i.e. web pages) of the web application. You embed Java code into special HTML tags, which gets executed when the web page is requested. The output of the executed code is placed in the spot where the Java code was in the document. Figure \ref{fig:jsp-processes} shows what happens when a user requests a service that is represented as JSP file. It is processing using a \textbf{JSP Translator}, which takes a JSP file, executes the Java code inside it and replaces said Java code with code's output.
 
-\textbf{JSP} stands for Java Server pages and is way of embedding business logic into the presentation layer (i.e. web pages) of the web application. You embed Java code into special HTML tags, which gets executed when the web page is requested. The output of the executed code is placed in the spot where the Java code was in the document. Figure \ref{fig:jsp-processes} show how the
+TODO: JSP processing figure
+CAPTION: Process of producing a HTML response using a JSP file (e.g. request to URL \texttt{http://www.server.com:8080/servlet/JSPFile}
 
 Using servlets and JSP allow you to write pages of HTML with \textbf{embedded servlet API calls and raw Java logic}. However, this has the following \textbf{disadvantages}:
 \begin{itemize}
@@ -280,8 +296,6 @@ Using servlets and JSP allow you to write pages of HTML with \textbf{embedded se
 		\item without need for \textbf{high expertise in Java programming} (so web designers can work on the front-end web pages without worrying about complex, technical business/application logic)
 	\end{itemize}
 \end{itemize}
-
-TODO: bottom figure of web container
 
 \section{RMI}
 
@@ -478,7 +492,7 @@ TODO: N-tier architecture figure
 
 N Tier architectures aim to \textbf{generalize} even further, to allow for integration between multiple 3 Tier systems. The requirement for an N Tier architecture may stem from either:
 \begin{itemize}
-    \item The need for an application to communicate with a \textbf{more complex data source}. Rather than just communicating with a database, an application may need to communicate with an existing 2 or 3 Tier system to access resources. For example, many modern web services (such as Twitter) are complex 3 Tier (or N Tier) systems themselves, but are used by other applications as a data layer.
+    \item The need for an application to communicate with a 	\textbf{more complex data source}. Rather than just communicating with a database, an application may need to communicate with an existing 2 or 3 Tier system to access resources. For example, many modern web services (such as Twitter) are complex 3 Tier (or N Tier) systems themselves, but are used by other applications as a data layer.
 
     \item An \textbf{additional tier} may be added by incorporating a web server into the presentation layer. As web servers are so complex, they can be regarded as a separate tier entirely. An example of a web server that may grow in complexity is \textbf{Apache} -- the logic and settings behind a particular configuration may be so complex (complex URL mapping logic), it could be considered another tier itself.
 \end{itemize}
@@ -552,7 +566,9 @@ The two most widely used web service techniques is SOAP and REST. This document 
 
 SOAP is one method of developing web services. SOAP stands for \textbf{Simple Object Access Protocol}. It standardizes how data is sent over a variety of protocols (HTTP, FTP, SMTP) using XML. It supports both synchronous and asynchronous methods of communication. It can be used as an abstract form of RMI which is inter-operable. 
 
-Figure \ref{fig:soap} shows the process of invoking a web service implement with SOAP. A SOAP envelope is sent to a remote server, whose SOAP processor ipens the envelope to determine what the request is asking for (e.g. method, params, etc.). It compares the RPC call in the envelope to its WSDL document to ensure there is a match and then 
+Figure \ref{fig:soap} shows the process of invoking a web service implement with SOAP. A SOAP envelope is sent to a remote server, whose SOAP processor opens the envelope to determine what the request is asking for (e.g. method, params, etc.). It compares the RPC call in the envelope to its WSDL document to ensure there is a match. If so, the server performs the necessary business logic (i.e. executes the function), wraps the result in a SOAP message and then sends the SOAP XML response to the client.
+
+TODO: soap process
 
 \subsubsection{Message Format}
 
@@ -670,6 +686,7 @@ The reference implementation of JAX-RS is \textbf{Jersey}, which provides both a
 
 
 \section{Naming}
+
 In order to get access to a resource, they must be \textbf{named}. Whether that resource is a computer, printer, document or web page, it must be identifiable by a name of some form. Names could be human readable, or might be a string of bits or characters. 
 
 A name represents a series of \textbf{attributes} of an entity. \textbf{One} of these attributes will typically give access to the entity. Changing a name into its related attributes is known as \textbf{resolving} the name. Figure \ref{fig:name-resolution} shows the archetypal example of a name resolution system, the WWW. Notice how the URL specifies different components of the resource's name, all of which are resolved to retrieve the final file.
