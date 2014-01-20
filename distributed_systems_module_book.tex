@@ -1,13 +1,8 @@
 %
-% Name: Module Book Template
+% Distributed Systems Module Book (2013-2014)
 % Author: Donald Whyte (sc10dw@leeds.ac.uk)
 %
-% Template document for revision module books.
-%
 
-%
-% Use the standard article template.
-%
 \documentclass{article}
 
 \usepackage[margin=2cm]{geometry} % easy page formatting
@@ -95,6 +90,12 @@ An example of a client-server system which uses the PAD model is a \textbf{web s
 \end{itemize}
 This process, along with the logical split into the three layers is shown in Figure \ref{fig:web-search-engine-pad}.
 
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.4]{figures/pad-example-web-search.png}
+	\caption{Web Search Engine using PAD Architecture}
+	\label{fig:web-search-engine-pad}
+\end{figure}
 
 \subsubsection{PAD and the Client Server Model}
 
@@ -106,7 +107,7 @@ Figure \ref{fig:multi-tiered-architectures} shows the different ways in which th
 	\centering
 	\includegraphics[scale=0.5]{figures/multitiered-architectures.png}
 	\caption{Multi-tiered Architectures with the PAD Model}
-	\label{fig:multi-tiered-architecture}
+	\label{fig:multi-tiered-architectures}
 \end{figure}
 
 At one extreme (left of Figure \ref{fig:multi-tiered-architectures}), the Presentation Tier may be rendered on both the Client and the Server machine (for example, when using remote desktop/VNC) with everything else being present on the server. This has the advantage of having a very lightweight client.
@@ -396,13 +397,6 @@ However, the cost of JSON being more lightweight is a \textbf{lack of formality}
 
 Java has a specific implementation of RMI. As a `Java-only' solution, it is much simpler than a language independent solution such as CORBA. It is designed to fit in with the Java language as seamlessly as possible -- calling a method on a remote object \textbf{appears identical} to calling a method on a local object (as remote and local objects are type-equivalent). 
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[scale=0.7]{figures/rmi-architecture.png}
-	\caption{RMI Architecture}
-	\label{fig:rmi-architecture}
-\end{figure} 
-
 \subsubsection{Remote Object References}
 
 In order to call methods on a remote object, the client must have a unique reference to the object. These references are called \textbf{Remote Object References (ROR)}. This is a \textbf{transparent} mechanism of accessing or referencing an object, as ROR is the only way of referencing objects.
@@ -424,6 +418,13 @@ Rather than have the overhead of looking up a Remote Object Reference, local obj
 Because of the cost of serialization, it is more expensive to send an object than a primitive value. In contrast, when sending a return value it is much less expensive to send an object than a series of primitive values. Whilst the object will still take up more bandwidth, each return value requires an individual remote method call, and the overhead of this is greater than the extra bandwidth used.
 
 \subsubsection{Proxies, Stubs and Skeletons}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{figures/rmi-architecture.png}
+	\caption{RMI Architecture}
+	\label{fig:java-rmi-architecture}
+\end{figure} 
 
 Figure \ref{fig:java-rmi-architecture} shows the architecture of Java RMI. The client accesses a proxy object that implements the same interface as the real object. It calls methods on the proxy object, which delegates the task to the remote object using message passing. The server then receives this message and determines which object and method of chosen object to call, return the result back to the client via another message. More specifically:
 
@@ -838,6 +839,7 @@ If the name database or number of users is very large, we cannot store all namin
 This is known as \textbf{distributed naming}, which is something DNS performs. Section \ref{sec:dns-lookup} uses DNS as an example of distributed naming and the concerns you need to think about.
 
 \subsection{Example Naming Service -- DNS}
+\label{sec:dns}
 
 \begin{figure}[h]
 	\centering
@@ -895,7 +897,14 @@ DNS Lookup can be \textbf{Iterative}, \textbf{Recursive} or \textbf{Multicast}.
 
 \textbf{Multicast} resolution requires the name to be broadcast to \textbf{all name servers}, and the one that is holding the binding for the name responds. An additional server is required, to handle what happens if a name is not bound. 
 
-The communication costs of iteration and recursive lookup are shown in Figure \ref{dns-lookup-costs}. Iterative resolution has more WAN, long-distance communication than recursive resolution. This may make it slower to resolve.
+The communication costs of iteration and recursive lookup are shown in Figure \ref{fig:dns-lookup-costs}. Iterative resolution has more WAN, long-distance communication than recursive resolution. This may make it slower to resolve.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.6]{figures/dns-lookup-costs.png}
+	\caption{Illustration of Communication Required (thus, the cost required) to Perform Iterative and Recursive DNS Lookup}
+	\label{fig:dns-lookup-costs}
+\end{figure}
 
 \section{Directory \& Discovery Services}
 
@@ -1010,7 +1019,7 @@ By imposing a maximum drift rate $p$, two clocks may as far as $2p\Delta t$ apar
 	\label{fig:utc-drift}
 \end{figure}
 
-By having a maximum drift rate ($p$), 2 clocks within a distributed system can be guaranteed to be within $2p \theta t$ at time $T$. This occurs because both clocks may be drifting away from UTC at a maximum of $p$, but in opposite directions (one moving fast, one moving slowly). This is shown in Figure \ref{fig:drift-utc}.
+By having a maximum drift rate ($p$), 2 clocks within a distributed system can be guaranteed to be within $2p \theta t$ at time $T$. This occurs because both clocks may be drifting away from UTC at a maximum of $p$, but in opposite directions (one moving fast, one moving slowly). This is shown in Figure \ref{fig:utc-drift}.
 
 \subsection{Christian's Algorithm}
 
@@ -1087,7 +1096,7 @@ The main problem that Grids attempt to solve is the sharing of computer resource
 	\centering
 	\includegraphics[scale=0.5]{figures/grid.png}
 	\caption{Grid computing is analogous to the electricity grid. You just tap into the grid and receive access to the desired resources (which can be \textit{anything}).}
-	\label{fig:ntp}
+	\label{fig:grid-computing-analogy}
 \end{figure}
 
 The concept of a grid has transformed research, business, medicine and engineering. According to Ian Foster, there are \textbf{three major requirements for a grid system}:
@@ -1419,7 +1428,7 @@ Usually the programmer will also specify a \textbf{method to partition the data}
 	\centering
 	\includegraphics[scale=0.6]{figures/mapreduce-detailed.png}
 	\caption{Example of Mapreduce with Specific Array of Data}
-	\label{fig:mapreduce}
+	\label{fig:mapreduce-detailed}
 \end{figure}
 
 The MapReduce \textbf{runtime} (such as Hadoop) will usually be responsible for scheduling workers to handle map jobs (and partial reduces), moving the data to the appropriate processes (distributed) and any synchronization that needs to occur. It will also handle faults, such as if a worker fails. This makes it easier for application developers to create systems that process Big Data.
